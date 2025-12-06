@@ -182,5 +182,12 @@ const QUESTIONS = [
     suffix: ".",
     meaning: "인지하고 있어요(알고 있어요)",
     translation: "네, 인지하고 있어요."
+  },
+  {
+    answer: "in flight",
+    prefix: "Let me close out a few",
+    suffix: "tasks first",
+    meaning: "현재 진행 중인",
+    translation: "지금 진행 중인 작업 몇 개만 마무리하고 갈게요."
   }
 ];
