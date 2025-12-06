@@ -355,9 +355,7 @@ function handleKey(e) {
   const code = e.code;
 
   // 단축키 등은 무시 (command, ctrl, alt 조합)
-  if (e.metaKey || e.ctrlKey || e.altKey) {
-    return;
-  }
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
 
   // Enter → 정답 체크
   if (key === "Enter") {
@@ -369,7 +367,6 @@ function handleKey(e) {
   // Backspace → 마지막 글자 삭제
   if (key === "Backspace") {
     e.preventDefault();
-    if (!typedRaw) return;
     typedRaw = typedRaw.slice(0, -1);
     finished = false;
     renderSlots();
@@ -378,11 +375,9 @@ function handleKey(e) {
 
   // 지금까지 입력한 글자 수(공백 제외)
   const lettersCount = typedRaw.replace(/\s/g, "").length;
-  if (lettersCount >= totalSlots) {
-    return; // 슬롯 초과되면 더 못 치게
-  }
+  if (lettersCount >= totalSlots) return;
 
-  // 스페이스
+  // Space
   if (key === " ") {
     e.preventDefault();
     typedRaw += " ";
@@ -391,15 +386,30 @@ function handleKey(e) {
     return;
   }
 
-  // 한글/영문 상관없이 "키보드 물리 위치" 기준으로 알파벳 처리
+  // -------------------------
+  // 🔥 모바일 대응 핵심 로직
+  // -------------------------
+
+  // 1) PC — e.code가 존재하는 경우
   if (code && code.startsWith("Key")) {
     e.preventDefault();
-    const letter = code.slice(3).toLowerCase(); // A,B,C → a,b,c
-    typedRaw += letter;
+    typedRaw += code.slice(3).toLowerCase();
     finished = false;
     renderSlots();
+    return;
   }
+
+  // 2) 모바일 — e.key로만 들어오는 경우
+  if (key.length === 1 && /[a-zA-Z]/.test(key)) {
+    e.preventDefault();
+    typedRaw += key.toLowerCase();
+    finished = false;
+    renderSlots();
+    return;
+  }
+
 }
+
 
 // -------------------- 이벤트 연결 & 시작 --------------------
 
