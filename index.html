@@ -9,7 +9,6 @@
 <body>
   <div class="card" id="card">
 
-    <!-- 상단 헤더 -->
     <div class="top-row">
       <div class="left-header">
         <div class="members-tag">*members only</div>
@@ -29,31 +28,28 @@
         </a>
       </div>
 
-      <!-- Reset 버튼 -->
       <button class="mode-pill" id="resetBtn" type="button">
         <div class="mode-dot"></div>
         <span>Reset</span>
       </button>
     </div>
-    <!-- /.top-row -->
-
-    <!-- 문장 + 타이핑 슬롯 -->
-        <!-- 문장 + 타이핑 슬롯 -->
     <div class="sentence-card">
       <div class="sentence-line">
-        <span class="sentence-prefix" id="sentencePrefix"></span>
+        
+        <div class="line-part" id="sentencePrefix"></div>
 
-        <span class="answer-pill">
-          <span class="answer-visual-inner" id="slotsContainer"></span>
-        </span>
+        <div class="answer-pill-wrapper">
+          <span class="answer-pill">
+            <span class="answer-visual-inner" id="slotsContainer"></span>
+          </span>
+        </div>
 
-        <span class="sentence-suffix" id="sentenceSuffix"></span>
+        <div class="line-part" id="sentenceSuffix"></div>
       </div>
 
       <div class="meaning" id="meaning"></div>
     </div>
 
-    <!-- 🔒 모바일 키보드 호출용 숨은 인풋 -->
     <input
       type="text"
       id="mobileInput"
@@ -65,7 +61,6 @@
     />
 
 
-    <!-- 하단: 정답 보기 + 안내문 (같은 단계) -->
     <div class="bottom-row">
       <button class="btn" id="skipBtn">정답 보기</button>
     </div>
@@ -73,7 +68,6 @@
       화면의 빈칸에 바로 타이핑하고 Enter를 눌러보세요
     </p>
 
-    <!-- 상태/메타 -->
     <div class="status" id="status"></div>
     <div class="meta">
       <span id="progress"></span>
@@ -81,7 +75,6 @@
     </div>
   </div>
 
-  <!-- 팝업(모달) -->
   <div id="resultModal" class="modal hidden">
     <div class="modal-content">
 
@@ -105,10 +98,7 @@
   </div>
 
 
-  <!-- 순서 중요: 데이터 → 로직 -->
   <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>
-
-
 </html>

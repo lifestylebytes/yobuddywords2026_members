@@ -55,10 +55,10 @@ function pickSessionQuestions(limit = 10) {
 function normaliseBase(str) {
   return (str || "")
     .toLowerCase()
-    .replace(/[’‘]/g, "'")    // 따옴표 통일
-    .replace(/[^a-z\s;:'-]/g, "") // 알파벳 + 공백만 허용
+    .replace(/[’‘]/g, "'")          // 따옴표 통일
+    .replace(/[^a-z\s;:'-]/g, "")   // 알파벳 + 공백 + ;:'- 만 허용
     .trim()
-    .replace(/\s+/g, " ");    // 여러 칸 → 한 칸
+    .replace(/\s+/g, " ");          // 여러 칸 → 한 칸
 }
 
 // 공백 유지
@@ -315,13 +315,16 @@ function showResultPopup() {
 
   modal.classList.remove("hidden");
 }
+
+// -------------------- 모바일 포커스 --------------------
+
 function focusMobileInput() {
   if (!mobileInput) return;
-  // 일부 브라우저에서 에러 방지용 try
   try {
     mobileInput.focus();
   } catch (e) {}
 }
+
 // -------------------- Reset --------------------
 
 function resetAll() {
@@ -350,7 +353,31 @@ function resetAll() {
   }
 
   setSentence(questions[0]);
-  focusMobileInput();
+  focusMobileInput();   // ✅ 모바일 인풋 포커스
+}
+
+// 🔤 실제로 한 글자 입력 처리 (PC/모바일 공통)
+function applyChar(rawCh) {
+  let ch = rawCh;
+
+  // 지금까지 입력한 글자 수(공백 제외)
+  const lettersCount = typedRaw.replace(/\s/g, "").length;
+  if (lettersCount >= totalSlots) return; // 슬롯 초과 방지
+
+  // 스페이스 처리
+  if (ch === " ") {
+    typedRaw += " ";
+    finished = false;
+    renderSlots();
+    return;
+  }
+
+  // 허용 문자만 입력 (알파벳 + ; : ' -)
+  if (!/[a-zA-Z;:'-]/.test(ch)) return;
+
+  typedRaw += ch.toLowerCase();
+  finished = false;
+  renderSlots();
 }
 
 // -------------------- 키보드 입력 --------------------
@@ -381,80 +408,43 @@ function handleKey(e) {
     return;
   }
 
-  // 지금까지 입력한 글자 수(공백 제외)
-  const lettersCount = typedRaw.replace(/\s/g, "").length;
-  if (lettersCount >= totalSlots) return;
-
   // Space
   if (key === " ") {
     e.preventDefault();
-    typedRaw += " ";
-    finished = false;
-    renderSlots();
+    applyChar(" ");
     return;
   }
 
-
-
-
-// 페이지 처음 로드됐을 때 한 번 시도
-window.addEventListener("load", focusMobileInput);
-
-// 카드나 화면 아무 곳이나 탭하면 다시 포커스
-card.addEventListener("click", focusMobileInput);
-card.addEventListener("touchstart", focusMobileInput);
-
-
-  // -------------------------
-  // 🔥 모바일 대응 핵심 로직
-  // -------------------------
-
- // 1) PC — 알파벳 + 특수문자 키 처리
-  if (code) {
-    // KeyA ~ KeyZ → 알파벳 처리
-    if (code.startsWith("Key")) {
-      e.preventDefault();
-      typedRaw += code.slice(3).toLowerCase();
-      finished = false;
-      renderSlots();
-      return;
-    }
-
-    // 특수문자 키 처리
-    const specialMap = {
-      "Semicolon": ";",
-      "Quote": "'",
-      "Minus": "-",
-      "Period": ".",
-      "Comma": ",",
-      "Slash": "/",
-      "BracketLeft": "[",
-      "BracketRight": "]"
-    };
-
-    const specialKey = code.replace("Key", "");
-    if (specialMap[specialKey]) {
-      e.preventDefault();
-      typedRaw += specialMap[specialKey];
-      finished = false;
-      renderSlots();
-      return;
-    }
-  }
-
-  // 2) 모바일 — 실제 입력되는 key 값 기준 처리
-  if (key.length === 1 && /[a-zA-Z;:'-]/.test(key)) {
+  // 1) PC — 한/영 상관없이 물리 키 위치 기준 (KeyA, KeyB…)
+  if (code && code.startsWith("Key")) {
     e.preventDefault();
-    typedRaw += key.toLowerCase();
-    finished = false;
-    renderSlots();
+    applyChar(code.slice(3)); // "KeyA" → "A"
     return;
   }
 
-
-
+  // 2) 그 외(모바일 포함) — e.key 기준으로 한 글자 처리
+  if (key.length === 1) {
+    e.preventDefault();
+    applyChar(key);
+    return;
+  }
 }
 
+// 📱 안드로이드 등에서 keydown 대신 input 이벤트만 오는 경우 대응
+if (mobileInput) {
+  mobileInput.addEventListener("input", (e) => {
+    const value = e.target.value;
+    if (!value) return;
+
+    // 들어온 문자열을 한 글자씩 applyChar로 전달
+    for (const ch of value) {
+      applyChar(ch);
+    }
+
+    // 인풋 값은 매번 비워서 계속 새 글자만 받도록
+    e.target.value = "";
+  });
+}
 
 // -------------------- 이벤트 연결 & 시작 --------------------
 
