@@ -189,5 +189,19 @@ const QUESTIONS = [
     suffix: "tasks first",
     meaning: "현재 진행 중인",
     translation: "지금 진행 중인 작업 몇 개만 마무리하고 갈게요."
+  },
+  {
+    answer: "table for now",
+    prefix: "We can revisit it later, but let’s",
+    suffix: ".",
+    meaning: "보류하다",
+    translation: "나중에 다시 보자. 지금은 보류하자."
+  },
+  {
+    answer: "move the needle",
+    prefix: "We need solutions that actually",
+    suffix: "",
+    meaning: "실질적인 변화를 만들다 / 눈에 띄는 개선을 만들다",
+    translation: "실제 변화를 만드는 해결책이 필요해."
   }
 ];
