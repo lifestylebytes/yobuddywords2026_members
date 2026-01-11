@@ -21,7 +21,7 @@ const QUESTIONS = [
     answer: "stall out",
     prefix: "The decision seems to have",
     suffix: ".",
-    meaning: "의사결정이 정체되다",
+    meaning: "21. 의사결정이 정체되다",
     translation: "의사결정이 중간에서 멈춘 상태예요.",
     addedDate: "2026-01-22"
   },
@@ -29,7 +29,7 @@ const QUESTIONS = [
     answer: "see it through",
     prefix: "Let’s",
     suffix: "once we commit.",
-    meaning: "논리를 끝까지 밀고 가다",
+    meaning: "27. 논리를 끝까지 밀고 가다",
     translation: "중간에 포기하지 말고 끝까지 가야 해요.",
     addedDate: "2026-01-28"
   },
@@ -37,7 +37,7 @@ const QUESTIONS = [
     answer: "warrants further review",
     prefix: "This issue",
     suffix: ".",
-    meaning: "추가 검토가 필요하다",
+    meaning: "13. 추가 검토가 필요하다",
     translation: "이 이슈는 추가 검토가 필요해 보여요.",
     addedDate: "2026-01-14"
   },
@@ -53,7 +53,7 @@ const QUESTIONS = [
     answer: "false premise",
     prefix: "The argument is built on a",
     suffix: ".",
-    meaning: "애초에 성립하지 않는 가정",
+    meaning: "30. 애초에 성립하지 않는 가정",
     translation: "그 논의는 잘못된 전제를 바탕으로 하고 있어요.",
     addedDate: "2026-01-31"
   },
@@ -69,7 +69,7 @@ const QUESTIONS = [
     answer: "for context",
     prefix: "",
     suffix: ", this decision was made last quarter.",
-    meaning: "맥락 설명을 하자면",
+    meaning: "12. 맥락 설명을 하자면",
     translation: "맥락 설명을 하자면 이 결정은 지난 분기에 내려졌어요.",
     addedDate: "2026-01-13"
   },
@@ -85,7 +85,7 @@ const QUESTIONS = [
     answer: "too many stakeholders",
     prefix: "Progress is slow because there are",
     suffix: ".",
-    meaning: "이해관계자가 많다",
+    meaning: "26. 이해관계자가 많다",
     translation: "결정이 느린 이유예요.",
     addedDate: "2026-01-27"
   },
@@ -93,7 +93,7 @@ const QUESTIONS = [
     answer: "sharpen the focus",
     prefix: "We need to",
     suffix: "before the next review.",
-    meaning: "논점을 명확히 하다",
+    meaning: "20. 논점을 명확히 하다",
     translation: "논점을 조금 더 명확히 해야 할 것 같아요.",
     addedDate: "2026-01-21"
   },
@@ -101,7 +101,7 @@ const QUESTIONS = [
     answer: "fix at the root",
     prefix: "We should",
     suffix: "instead of patching it.",
-    meaning: "문제를 근본적으로 해결하다",
+    meaning: "25. 문제를 근본적으로 해결하다",
     translation: "임시방편 말고 근본 해결이 필요해요.",
     addedDate: "2026-01-26"
   },
@@ -109,7 +109,7 @@ const QUESTIONS = [
     answer: "get traction",
     prefix: "This proposal hasn’t really",
     suffix: "yet.",
-    meaning: "논의를 본궤도로 올리다",
+    meaning: "19. 논의를 본궤도로 올리다",
     translation: "아직 이 안건은 논의가 본격화되지 않았어요.",
     addedDate: "2026-01-20"
   },
@@ -117,7 +117,7 @@ const QUESTIONS = [
     answer: "go off on a tangent",
     prefix: "We tend to",
     suffix: "during these discussions.",
-    meaning: "논점에서 벗어나다",
+    meaning: "29. 논점에서 벗어나다",
     translation: "중요한 논의 중에 자꾸 딴 얘기로 새요.",
     addedDate: "2026-01-30"
   },
@@ -125,7 +125,7 @@ const QUESTIONS = [
     answer: "key takeaway",
     prefix: "The",
     suffix: "from this meeting is alignment.",
-    meaning: "핵심 요점",
+    meaning: "11. 핵심 요점",
     translation: "이번 미팅의 핵심 요점은 정렬입니다.",
     addedDate: "2026-01-12"
   },
@@ -141,7 +141,7 @@ const QUESTIONS = [
     answer: "ease the load",
     prefix: "Splitting the work will",
     suffix: ".",
-    meaning: "부담을 줄이다",
+    meaning: "14. 부담을 줄이다",
     translation: "작업을 나누면 부담이 줄어요.",
     addedDate: "2026-01-15"
   },
@@ -173,7 +173,7 @@ const QUESTIONS = [
     answer: "kick the can down the road",
     prefix: "We keep",
     suffix: "instead of addressing the root issue.",
-    meaning: "결정을 미루다 / 차일피일 넘기다",
+    meaning: "28. 결정을 미루다 / 차일피일 넘기다",
     translation: "근본 해결 없이 결정을 계속 미루고 있어요.",
     addedDate: "2026-01-29"
   },
@@ -181,7 +181,7 @@ const QUESTIONS = [
     answer: "push back gently",
     prefix: "I’d like to",
     suffix: "on that assumption.",
-    meaning: "조심스럽게 반대 의견을 내다",
+    meaning: "23. 조심스럽게 반대 의견을 내다",
     translation: "강하게는 아니지만 반대는 해야 할 것 같아요.",
     addedDate: "2026-01-24"
   },
@@ -189,7 +189,7 @@ const QUESTIONS = [
     answer: "build in buffer time",
     prefix: "Let’s",
     suffix: "for safety.",
-    meaning: "완충 시간을 두다",
+    meaning: "15. 완충 시간을 두다",
     translation: "리스크 대비해서 일정에 여유를 두죠.",
     addedDate: "2026-01-16"
   },
@@ -197,7 +197,7 @@ const QUESTIONS = [
     answer: "fall through the cracks",
     prefix: "This task",
     suffix: "during the handoff.",
-    meaning: "완전히 빠져 있다",
+    meaning: "22. 완전히 빠져 있다",
     translation: "이 이슈가 아무도 챙기지 않아 빠졌어요.",
     addedDate: "2026-01-23"
   },
@@ -205,7 +205,7 @@ const QUESTIONS = [
     answer: "nitpick",
     prefix: "I don’t want to",
     suffix: ", but this could cause issues later.",
-    meaning: "사소해 보이지만 중요한 문제",
+    meaning: "17. 사소해 보이지만 중요한 문제",
     translation: "사소한 부분처럼 보이지만 나중에 문제 될 수 있어요.",
     addedDate: "2026-01-18"
   },
@@ -221,7 +221,7 @@ const QUESTIONS = [
     answer: "scramble",
     prefix: "I don’t want us to",
     suffix: ".",
-    meaning: "막판에 허둥대다",
+    meaning: "16. 막판에 허둥대다",
     translation: "막판에 허둥대지 않았으면 해요.",
     addedDate: "2026-01-17"
   },
@@ -229,7 +229,7 @@ const QUESTIONS = [
     answer: "skirt around",
     prefix: "It felt like we were",
     suffix: "the main issue.",
-    meaning: "말을 에둘러 하다 / 핵심을 피하다",
+    meaning: "18. 말을 에둘러 하다 / 핵심을 피하다",
     translation: "핵심을 피해서 이야기하는 느낌이었어요.",
     addedDate: "2026-01-19"
   },
@@ -237,7 +237,7 @@ const QUESTIONS = [
     answer: "scope creep",
     prefix: "This is starting to feel like",
     suffix: ".",
-    meaning: "일의 범위를 슬금슬금 늘리다",
+    meaning: "24. 일의 범위를 슬금슬금 늘리다",
     translation: "요구사항이 점점 늘고 있어요.",
     addedDate: "2026-01-25"
   }

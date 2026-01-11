@@ -183,7 +183,14 @@ function renderFullAnswer(answer) {
   });
 }
 
+
+
 // -------------------- 문제 세팅/진행 --------------------
+
+
+function cleanMeaning(text) {
+  return text.replace(/^(뜻\s*:\s*)\d+\.\s*/, '$1');
+}
 
 function setSentence(q) {
   if (!q) return;
@@ -199,12 +206,12 @@ function setSentence(q) {
   if (q.translation && q.meaning) {
     meaningEl.innerHTML = `
       <div class="translation-line">${q.translation}</div>
-      <div class="meaning-line">뜻 : ${q.meaning}</div>
+      <div class="meaning-line">${cleanMeaning(`뜻 : ${q.meaning}`)}</div>
     `;
   } else if (q.translation) {
     meaningEl.innerHTML = `<div class="translation-line">${q.translation}</div>`;
   } else if (q.meaning) {
-    meaningEl.innerHTML = `<div class="meaning-line">뜻 : ${q.meaning}</div>`;
+    meaningEl.innerHTML = `<div class="meaning-line">${cleanMeaning(`뜻 : ${q.meaning}`)}</div>`;
   } else {
     meaningEl.textContent = "";
   }
