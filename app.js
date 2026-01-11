@@ -538,4 +538,3 @@ document.getElementById("retryBtn").addEventListener("click", () => {
 
 // 시작
 resetAll()
-
