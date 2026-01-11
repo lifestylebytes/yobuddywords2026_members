@@ -44,7 +44,7 @@ const QUESTIONS = [
   {
     answer: "get a clear read on",
     prefix: "I want to",
-    suffix: "on the timeline before committing.",
+    suffix: "the timeline before committing.",
     meaning: "5. 상황을 명확히 파악하다",
     translation: "확정하기 전에 일정 상황을 명확히 파악하고 싶어요.",
     addedDate: "2026-01-06"
