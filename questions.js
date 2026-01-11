@@ -58,7 +58,7 @@ const QUESTIONS = [
     addedDate: "2026-01-31"
   },
   {
-    answer: "lag behind",
+    answer: "lagging behind",
     prefix: "The documentation is",
     suffix: "the actual work.",
     meaning: "9. 뒤처지다",
