@@ -2,353 +2,243 @@
 
 const QUESTIONS = [
   {
-    answer: "by any chance",
-    prefix: "Do you have time to look at this",
-    suffix: "?",
-    meaning: "혹시",
-    translation: "혹시 이거 한 번 봐줄 시간 있어?"
-  },
-  {
-    answer: "with a caveat",
-    prefix: "This is approved",
-    suffix: "",
-    meaning: "단, 한 가지 조건이 있는데",
-    translation: "조건부 승인입니다."
-  },
-  {
-    answer: "hectic",
-    prefix: "It’s been very",
-    suffix: ", but I’m really happy that our team has been super supportive.",
-    meaning: "바쁜, 정신없는",
-    translation: "요즘 정말 정신없었는데, 그래도 팀이 정말 많이 도와줘서 진짜 고마워"
-  },
-  {
-    answer: "I doubt about it",
-    prefix: "I hope they’ll just let us do things as usual, but",
+    answer: "helter-skelter",
+    prefix: "We’re all on the same project right now, so things are a little",
     suffix: ".",
-    meaning: "그럴 리가 없지… 🙄",
-    translation: "이번에는 좀 조용했으면 좋겠는데… 그럴 리는 없지"
+    meaning: "2. 우왕좌왕 / 뒤죽박죽 / 정신없음",
+    translation: "지금 다 같이 같은 프로젝트를 하다 보니 좀 정신없어요.",
+    addedDate: "2026-01-03"
   },
   {
-    answer: "down the line",
-    prefix: "I’m a bit concerned that this might cause bigger issues",
-    suffix: "",
-    meaning: "나중에, 추후에",
-    translation: "이게 나중에 더 큰 문제를 불러올까 봐 조금 걱정돼."
+    answer: "get the ball rolling",
+    prefix: "We’ll",
+    suffix: "on this as our first project in 2026.",
+    meaning: "1. 일을 시작하다 / 본격적으로 착수하다",
+    translation: "2026년에 첫 프로젝트로 이걸 시작할게요.",
+    addedDate: "2026-01-02"
   },
   {
-    answer: "a second pair of eyes",
-    prefix: "If anyone has a minute, I’d love",
-    suffix: "on this",
-    meaning: "다른 사람이 다시 확인해주는 것 (추가확인)",
-    translation: "누구 가능하면, 추가 확인 좀 해주세요."
-  },
-  {
-    answer: "hive mind",
-    prefix: "I have an optimization question for the",
+    answer: "stall out",
+    prefix: "The decision seems to have",
     suffix: ".",
-    meaning: "여기 계신 분들께… /집단 지성",
-    translation: "여기 계신 분들께, 최적화에 대한 질문이 있습니다."
+    meaning: "의사결정이 정체되다",
+    translation: "의사결정이 중간에서 멈춘 상태예요.",
+    addedDate: "2026-01-22"
   },
   {
-    answer: "on your end",
-    prefix: "Everything okay",
-    suffix: "?",
-    meaning: "당신쪽에서는",
-    translation: "당신 쪽에서는 문제 없나요?"
+    answer: "see it through",
+    prefix: "Let’s",
+    suffix: "once we commit.",
+    meaning: "논리를 끝까지 밀고 가다",
+    translation: "중간에 포기하지 말고 끝까지 가야 해요.",
+    addedDate: "2026-01-28"
   },
   {
-    answer: "second nature",
-    prefix: "I know this stuff is",
-    suffix: "to y’all, but you really gotta explain this stuff like I’m five.",
-    meaning: "기본 중의 기본 (몸에 밴 것 / 너무 익숙한 것 / 자동으로 하는 것)",
-    translation: "이거 여러분한텐 기본 중의 기본인 거 아는데… 저한테는 어린아이 설명하듯이 설명해주셔야 해요."
+    answer: "warrants further review",
+    prefix: "This issue",
+    suffix: ".",
+    meaning: "추가 검토가 필요하다",
+    translation: "이 이슈는 추가 검토가 필요해 보여요.",
+    addedDate: "2026-01-14"
   },
   {
-    answer: "our very own",
-    prefix: "Tomorrow’s session will be led by",
-    suffix: "Buddy You!",
-    meaning: "자랑스러운 우리의~",
-    translation: "내일 세션은 우리 자랑스러운 버디님이 진행해주실 예정입니다."
+    answer: "get a clear read on",
+    prefix: "I want to",
+    suffix: "on the timeline before committing.",
+    meaning: "5. 상황을 명확히 파악하다",
+    translation: "확정하기 전에 일정 상황을 명확히 파악하고 싶어요.",
+    addedDate: "2026-01-06"
   },
   {
-    answer: "moving pieces",
-    prefix: "A lot of",
-    suffix: "and was sure I had communicated it with you.",
-    meaning: "여러 가지가 동시에 돌아가는 상황",
-    translation: "여러 가지가 동시에 돌아가는 상황이었고, 나는 그걸 너에게 이미 전달했다고 확신했었어."
+    answer: "false premise",
+    prefix: "The argument is built on a",
+    suffix: ".",
+    meaning: "애초에 성립하지 않는 가정",
+    translation: "그 논의는 잘못된 전제를 바탕으로 하고 있어요.",
+    addedDate: "2026-01-31"
   },
   {
-    answer: "low hanging fruit",
-    prefix: "We have some",
-    suffix: "that would be great to harvest",
-    meaning: "쉽게 바로 처리할 수 있는 작업들",
-    translation: "쉽게 바로 처리할 수 있는 작업들이 몇 가지 있어서 지금 처리하면 좋을 것 같아요."
+    answer: "lag behind",
+    prefix: "The documentation is",
+    suffix: "the actual work.",
+    meaning: "뒤처지다",
+    translation: "문서가 실제 작업보다 뒤처져 있어요.",
+    addedDate: "2026-01-10"
   },
   {
-    answer: "edge case",
-    prefix: "Hi team, wanted to share a discovered",
-    suffix: "related to…",
-    meaning: "특이 케이스 / 예외 상황 / 특수한 경우",
-    translation: "팀 여러분, …와 관련해서 발견된 예외 케이스를 공유드리려고 합니다"
-  },
-  {
-    answer: "quick win",
-    prefix: "This could be a",
-    suffix: "for the team.",
-    meaning: "빠르게 성과가 나는 일",
-    translation: "팀이 바로 성과 낼 수 있는 작업일 수 있어요."
-  },
-  {
-    answer: "circling back",
-    prefix: "Just",
-    suffix: "on this — any updates on your side?",
-    meaning: "다시 얘기 꺼냅니다 / 다시 연락드립니다",
-    translation: "다시 한번 확인차 연락드려요. 혹시 진행 상황 있을까요?"
-  },
-  {
-    answer: "touch base",
-    prefix: "We had a quick",
-    suffix: "on resolving this issue",
-    meaning: "간단히 이야기하다 / 짧게 의견 맞추다 / 잠깐 체크하다",
-    translation: "이 문제 해결 관련해서 간단히 얘기 나눴어요."
-  },
-  {
-    answer: "signing off",
-    prefix: "I’m",
-    suffix: "as well",
-    meaning: "로그아웃 할게요",
-    translation: "저도 이제 로그아웃할게요"
-  },
-  {
-    answer: "TL;DR",
+    answer: "for context",
     prefix: "",
-    suffix: ": All good to proceed",
-    meaning: "요약하자면..",
-    translation: "요약하자면, 진행해도 괜찮습니다."
+    suffix: ", this decision was made last quarter.",
+    meaning: "맥락 설명을 하자면",
+    translation: "맥락 설명을 하자면 이 결정은 지난 분기에 내려졌어요.",
+    addedDate: "2026-01-13"
   },
   {
-    answer: "get ahead of",
-    prefix: "Yeah, thanks! Let’s",
-    suffix: "this.",
-    meaning: "미리 선제적으로 / 일이 커지기 전에 먼저 대응하자",
-    translation: "네 고마워요, 이거 미리 선제적으로 잡아두죠."
-  },
-  {
-    answer: "quick sanity check",
-    prefix: "Could you do a",
-    suffix: "on this? Just making sure I'm not missing anything.",
-    meaning: "빠르게 한 번 확인해주는 것",
-    translation: "혹시 내가 놓친 게 없는지 가볍게 한 번만 확인해줄 수 있을까요?"
-  },
-  {
-    answer: "High level view",
+    answer: "in the grand scheme of things",
     prefix: "",
-    suffix: "for week of Nov. 3rd",
-    meaning: "전체적인 개요 / 큰 흐름 / 핵심만 짚는 요약",
-    translation: "11월 3일 주간의 전체적인 개요입니다."
+    suffix: ", this delay won’t matter much.",
+    meaning: "3. 큰 그림에서 보면 / 전체 맥락에서",
+    translation: "큰 흐름에서 보면 이 지연은 큰 문제가 아닙니다.",
+    addedDate: "2026-01-04"
   },
   {
-    answer: "bandwidth",
-    prefix: "Could you look into this if you have the",
-    suffix: "?",
-    meaning: "여유 시간",
-    translation: "혹시 여유 있으면 이것 좀 봐줄 수 있을까요?"
-  },
-  {
-    answer: "have the cycles",
-    prefix: "I don’t",
-    suffix: "for a deep dive right now, but I can skim it.",
-    meaning: "여유/정신이 있다",
-    translation: "지금 자세히 볼 여유는 없는데, 대략 훑어보는 건 가능해."
-  },
-  {
-    answer: "keep an eye on",
-    prefix: "I’ll",
-    suffix: "it and update you if anything changes.",
-    meaning: "계속 주시하다 / 상황을 지켜보다",
-    translation: "지켜보고 있다가 변경되면 업데이트할게요."
-  },
-  {
-    answer: "swamped",
-    prefix: "Let me know when you’re less",
+    answer: "too many stakeholders",
+    prefix: "Progress is slow because there are",
     suffix: ".",
-    meaning: "엄청 바쁘다 / 일이 밀려있다",
-    translation: "좀 덜 바빠지면 알려줘."
+    meaning: "이해관계자가 많다",
+    translation: "결정이 느린 이유예요.",
+    addedDate: "2026-01-27"
   },
   {
-    answer: "on my radar",
-    prefix: "Yeap, it’s",
-    suffix: ".",
-    meaning: "인지하고 있어요(알고 있어요)",
-    translation: "네, 인지하고 있어요."
+    answer: "sharpen the focus",
+    prefix: "We need to",
+    suffix: "before the next review.",
+    meaning: "논점을 명확히 하다",
+    translation: "논점을 조금 더 명확히 해야 할 것 같아요.",
+    addedDate: "2026-01-21"
   },
   {
-    answer: "in flight",
-    prefix: "Let me close out a few",
-    suffix: "tasks first",
-    meaning: "현재 진행 중인",
-    translation: "지금 진행 중인 작업 몇 개만 마무리하고 갈게요."
+    answer: "fix at the root",
+    prefix: "We should",
+    suffix: "instead of patching it.",
+    meaning: "문제를 근본적으로 해결하다",
+    translation: "임시방편 말고 근본 해결이 필요해요.",
+    addedDate: "2026-01-26"
   },
   {
-    answer: "table it for now",
-    prefix: "We can revisit it later, but let’s",
-    suffix: ".",
-    meaning: "보류하다",
-    translation: "나중에 다시 보자. 지금은 보류하자."
+    answer: "get traction",
+    prefix: "This proposal hasn’t really",
+    suffix: "yet.",
+    meaning: "논의를 본궤도로 올리다",
+    translation: "아직 이 안건은 논의가 본격화되지 않았어요.",
+    addedDate: "2026-01-20"
   },
   {
-    answer: "move the needle",
-    prefix: "We need solutions that actually",
-    suffix: "",
-    meaning: "실질적인 변화를 만들다 / 눈에 띄는 개선을 만들다",
-    translation: "실제 변화를 만드는 해결책이 필요해."
+    answer: "go off on a tangent",
+    prefix: "We tend to",
+    suffix: "during these discussions.",
+    meaning: "논점에서 벗어나다",
+    translation: "중요한 논의 중에 자꾸 딴 얘기로 새요.",
+    addedDate: "2026-01-30"
   },
   {
-    answer: "dialed in",
-    prefix: "Let’s get",
-    suffix: "before we proceed.",
-    meaning: "(사람) 컨디션 좋다 / (상황) 작업이 정교하게 맞춰진",
-    translation: "진행하기 전에 컨디션/세팅을 제대로 맞추자."
-  },
-  {
-    answer: "hunch",
-    prefix: "I have a",
-    suffix: "that the client might change the request.",
-    meaning: "직감, 촉, 느낌",
-    translation: "느낌상 클라이언트가 요구 바꿀 것 같다"
-  },
-  {
-    answer: "dial down",
-    prefix: "We may need to",
-    suffix: "the scope.",
-    meaning: "강도·속도·레벨을 낮추다 / 조절해서 줄이다",
-    translation: "범위를 좀 줄여야 할 것 같아요."
-  },
-  {
-    answer: "rumor mill",
+    answer: "key takeaway",
     prefix: "The",
-    suffix: "says the schedule might get pushed.",
-    meaning: "정체불명의 소문, 가십",
-    translation: "소문에 따르면 일정이 미뤄질 수도 있대."
+    suffix: "from this meeting is alignment.",
+    meaning: "핵심 요점",
+    translation: "이번 미팅의 핵심 요점은 정렬입니다.",
+    addedDate: "2026-01-12"
   },
   {
-    answer: "soft commit",
-    prefix: "This is a",
-    suffix: "for now,  I’ll confirm once I have more clarity.",
-    meaning: "임시 확정",
-    translation: "지금은 임시 확정이고, 좀 더 명확해지면 확답 드릴게요"
+    answer: "bottleneck",
+    prefix: "The biggest",
+    suffix: "right now is QA.",
+    meaning: "6. 병목 구간 / 막히는 지점",
+    translation: "지금 가장 큰 병목은 QA입니다.",
+    addedDate: "2026-01-07"
   },
   {
-    answer: "pencil it in",
-    prefix: "Let’s",
-    suffix: "for Thursday and confirm later.",
-    meaning: "일단 임시로 잡아두다",
-    translation: "목요일로 일단 잡아두고 나중에 확정하죠"
-  },
-  {
-    answer: "off track",
-    prefix: "The project is",
-    suffix: "due to unexpected delays.",
-    meaning: "계획·일정·목표에서 벗어난 상태",
-    translation: "예상치 못한 지연 때문에 프로젝트가 일정에서 벗어났어요."
-  },
-  {
-    answer: "take ownership",
-    prefix: "I can",
-    suffix: "of this and follow it through.",
-    meaning: "주도적으로 맡다 / 책임지고 끝까지 챙기다",
-    translation: "제가 이건 맡아서 끝까지 챙길게요."
-  },
-  {
-    answer: "in flux",
-    prefix: "The timeline is still",
-    suffix: ", so nothing is confirmed yet.",
-    meaning: "아직 확정되지 않은",
-    translation: "일정이 아직 계속 변동 중이라 확정된 건 없어요."
-  },
-  {
-    answer: "time-bound",
-    prefix: "This task is",
-    suffix: ", so we can’t delay it.",
-    meaning: "명확한 기한이 정해진",
-    translation: "이 업무는 기한이 정해져 있어서 미룰 수 없어요."
-  },
-  {
-    answer: "ducks in a row",
-    prefix: "Let’s get our",
-    suffix: "before the meeting.",
-    meaning: "사전에 준비를 다 끝내다",
-    translation: "미팅 전에 준비를 다 정리해두죠."
-  },
-  {
-    answer: "corporate jargon",
-    prefix: "Let’s avoid too much",
-    suffix: "in this email.",
-    meaning: "회사에서만 쓰는 전문 용어",
-    translation: "이 메일에서는 회사식 용어를 너무 많이 쓰지 맙시다."
-  },
-  {
-    answer: "at face value",
-    prefix: "Let’s not take this feedback",
+    answer: "ease the load",
+    prefix: "Splitting the work will",
     suffix: ".",
-    meaning: "겉으로 보이는 대로 / 깊이 따지지 않고",
-    translation: "이 피드백을 그대로만 받아들이지는 맙시다."
+    meaning: "부담을 줄이다",
+    translation: "작업을 나누면 부담이 줄어요.",
+    addedDate: "2026-01-15"
   },
   {
-    answer: "raise a red flag",
-    prefix: "We can’t start until we get approval, which",
-    suffix: "for the timeline.",
-    meaning: "문제 가능성을 알리다 / 경고 신호를 보내다",
-    translation: "승인이 나와야 시작할 수 있어서 일정에 문제가 생길 수 있어요."
+    answer: "might be redundant",
+    prefix: "",
+    suffix: ", I’ll share it again.",
+    meaning: "이미 들은 내용일 수도 있지만",
+    translation: "이미 들으셨을 수도 있지만 다시 공유할게요.",
+    addedDate: "2026-01-11"
   },
   {
-    answer: "iron out",
-    prefix: "We need to",
-    suffix: "a few details first.",
-    meaning: "세부 문제를 해결하다",
-    translation: "몇 가지 세부사항을 먼저 정리해야 해요."
+    answer: "on the surface",
+    prefix: "",
+    suffix: ", everything looks fine, but we should double-check.",
+    meaning: "4. 겉으로 보기에는",
+    translation: "겉으로 보기엔 괜찮아 보이지만 다시 확인해봐야 해요.",
+    addedDate: "2026-01-05"
   },
   {
-    answer: "on the back burner",
-    prefix: "We’ll keep this",
-    suffix: "for now.",
-    meaning: "우선순위를 낮춰두다 / 당장은 안 하는 상태로 두다",
-    translation: "이건 당분간 우선순위 낮춰두죠."
+    answer: "hand off",
+    prefix: "We’ll",
+    suffix: "this task to the next team.",
+    meaning: "7. 작업을 인계하다",
+    translation: "이 작업은 다음 팀에 인계할게요.",
+    addedDate: "2026-01-08"
   },
   {
-    answer: "ahead of the curve",
-    prefix: "This approach puts us",
-    suffix: ".",
-    meaning: "한발 앞선",
-    translation: "이 접근법 덕분에 우리가 한발 앞서가요."
+    answer: "kick the can down the road",
+    prefix: "We keep",
+    suffix: "instead of addressing the root issue.",
+    meaning: "결정을 미루다 / 차일피일 넘기다",
+    translation: "근본 해결 없이 결정을 계속 미루고 있어요.",
+    addedDate: "2026-01-29"
   },
   {
-    answer: "in the pipeline",
-    prefix: "We have a few updates",
-    suffix: "",
-    meaning: "이미 계획돼 있거나 진행 예정인",
-    translation: "곧 나올 업데이트들이 몇 개 있어요"
+    answer: "push back gently",
+    prefix: "I’d like to",
+    suffix: "on that assumption.",
+    meaning: "조심스럽게 반대 의견을 내다",
+    translation: "강하게는 아니지만 반대는 해야 할 것 같아요.",
+    addedDate: "2026-01-24"
   },
   {
-    answer: "bumping up",
-    prefix: "I’m",
-    suffix: "due to the deadline.",
-    meaning: "중요도를 높이다 / 일정 앞당기다",
-    translation: "마감 때문에 이걸 우선순위로 올릴게요."
-  },
-  {
-    answer: "play it by ear",
+    answer: "build in buffer time",
     prefix: "Let’s",
-    suffix: "and adjust as needed.",
-    meaning: "상황 보면서 결정하다",
-    translation: "상황 보면서 필요하면 조정하죠."
+    suffix: "for safety.",
+    meaning: "완충 시간을 두다",
+    translation: "리스크 대비해서 일정에 여유를 두죠.",
+    addedDate: "2026-01-16"
   },
   {
-    answer: "put a pin in it",
-    prefix: "We need to",
-    suffix: "and revisit it tomorrow.",
-    meaning: "일단 멈추고 나중에 다시 다루다",
-    translation: "이건 일단 여기까지 하고 나중에 다시 보죠."
+    answer: "fall through the cracks",
+    prefix: "This task",
+    suffix: "during the handoff.",
+    meaning: "완전히 빠져 있다",
+    translation: "이 이슈가 아무도 챙기지 않아 빠졌어요.",
+    addedDate: "2026-01-23"
+  },
+  {
+    answer: "nitpick",
+    prefix: "I don’t want to",
+    suffix: ", but this could cause issues later.",
+    meaning: "사소해 보이지만 중요한 문제",
+    translation: "사소한 부분처럼 보이지만 나중에 문제 될 수 있어요.",
+    addedDate: "2026-01-18"
+  },
+  {
+    answer: "out of scope",
+    prefix: "That request is",
+    suffix: "for this sprint.",
+    meaning: "8. 범위를 벗어난",
+    translation: "그 요청은 이번 스프린트 범위를 벗어납니다.",
+    addedDate: "2026-01-09"
+  },
+  {
+    answer: "scramble",
+    prefix: "I don’t want us to",
+    suffix: ".",
+    meaning: "막판에 허둥대다",
+    translation: "막판에 허둥대지 않았으면 해요.",
+    addedDate: "2026-01-17"
+  },
+  {
+    answer: "skirt around",
+    prefix: "It felt like we were",
+    suffix: "the main issue.",
+    meaning: "말을 에둘러 하다 / 핵심을 피하다",
+    translation: "핵심을 피해서 이야기하는 느낌이었어요.",
+    addedDate: "2026-01-19"
+  },
+  {
+    answer: "scope creep",
+    prefix: "This is starting to feel like",
+    suffix: ".",
+    meaning: "일의 범위를 슬금슬금 늘리다",
+    translation: "요구사항이 점점 늘고 있어요.",
+    addedDate: "2026-01-25"
   }
 ];

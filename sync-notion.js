@@ -114,12 +114,11 @@ async function fetchAllPagesFromDatabase() {
 //  1) 예문 안에 '_'가 있으면, 그 구간을 "빈칸"으로 보고 앞/뒤 자르기
 //  2) '_'가 전혀 없으면, answer 문자열 위치로 자르기 (fallback)
 // ──────────────────────────────────────────────
-function buildQuestionFromRow(vocab, sentence, meaning, translation) {
+function buildQuestionFromRow(vocab, sentence, meaning, translation, addedDate) {
   if (!vocab || !sentence) return null;
 
-  const s = sentence.replace(/\u00a0/g, " "); // 특수 공백 제거
+  const s = sentence.replace(/\u00a0/g, " ");
 
-  // 1) 언더바(____, ___ ____ 등)가 있는 경우
   const firstUnderscore = s.indexOf("_");
   if (firstUnderscore !== -1) {
     let lastUnderscore = s.lastIndexOf("_");
@@ -127,22 +126,17 @@ function buildQuestionFromRow(vocab, sentence, meaning, translation) {
       lastUnderscore++;
     }
 
-    const prefix = s.slice(0, firstUnderscore).trimEnd();
-    const suffix = s.slice(lastUnderscore + 1).trimStart();
-
     return {
       answer: vocab,
-      prefix,
-      suffix,
+      prefix: s.slice(0, firstUnderscore).trimEnd(),
+      suffix: s.slice(lastUnderscore + 1).trimStart(),
       meaning,
       translation: translation || "",
+      addedDate
     };
   }
 
-  // 2) 언더바가 없으면: answer 위치 기준
-  const lowerS = s.toLowerCase();
-  const lowerV = vocab.toLowerCase();
-  const idx = lowerS.indexOf(lowerV);
+  const idx = s.toLowerCase().indexOf(vocab.toLowerCase());
 
   if (idx === -1) {
     return {
@@ -151,18 +145,17 @@ function buildQuestionFromRow(vocab, sentence, meaning, translation) {
       suffix: "",
       meaning,
       translation: translation || "",
+      addedDate
     };
   }
 
-  const prefix = s.slice(0, idx).trimEnd();
-  const suffix = s.slice(idx + vocab.length).trimStart();
-
   return {
     answer: vocab,
-    prefix,
-    suffix,
+    prefix: s.slice(0, idx).trimEnd(),
+    suffix: s.slice(idx + vocab.length).trimStart(),
     meaning,
     translation: translation || "",
+    addedDate
   };
 }
 
@@ -185,7 +178,8 @@ function buildObjectLiteral(q) {
     `    prefix: ${toJSStringLiteral(q.prefix)},`,
     `    suffix: ${toJSStringLiteral(q.suffix)},`,
     `    meaning: ${toJSStringLiteral(q.meaning)},`,
-    `    translation: ${toJSStringLiteral(q.translation)}`,
+    `    translation: ${toJSStringLiteral(q.translation)},`,
+    `    addedDate: ${toJSStringLiteral(q.addedDate)}`,
     "  }",
   ].join("\n");
 }
@@ -204,41 +198,69 @@ async function buildQuestionsFile() {
   let skippedMissing = 0;
 
   for (const page of pages) {
-    const props = page.properties || {};
+  const props = page.properties || {};
 
-    // 선택 == "word" 인 것만 사용
-    const selectProp = findProp(props, "선택");
-    const isWord =
-      selectProp &&
-      selectProp.type === "select" &&
-      selectProp.select &&
-      selectProp.select.name === "word";
+  // 1️⃣ word 필터
+  const selectProp = findProp(props, "선택");
+  const isWord =
+    selectProp &&
+    selectProp.type === "select" &&
+    selectProp.select &&
+    selectProp.select.name === "word";
 
-    if (!isWord) {
-      skippedNoWordTag++;
-      continue;
-    }
-
-    // 컬럼 매핑
-    const vocabProp = findProp(props, "어휘");
-    const sentenceProp = findProp(props, "예문");
-    const meaningProp = findProp(props, "뜻 (클릭하면 설명)");
-    const translationProp =
-      findProp(props, "예문 해석 AI") || findProp(props, "예문 해석");
-
-    const vocab = extractText(vocabProp);
-    const sentence = extractText(sentenceProp);
-    const meaning = extractText(meaningProp);
-    const translation = extractText(translationProp);
-
-    const q = buildQuestionFromRow(vocab, sentence, meaning, translation);
-    if (!q) {
-      skippedMissing++;
-      continue;
-    }
-
-    questions.push(q);
+  if (!isWord) {
+    skippedNoWordTag++;
+    continue;
   }
+
+  // 2️⃣ 컬럼 매핑
+  const vocabProp = findProp(props, "어휘");
+  const sentenceProp = findProp(props, "예문");
+  const meaningProp = findProp(props, "뜻 (클릭하면 설명)");
+  const translationProp =
+    findProp(props, "예문 해석 AI") || findProp(props, "예문 해석");
+
+  const vocab = extractText(vocabProp);
+  const sentence = extractText(sentenceProp);
+  const meaning = extractText(meaningProp);
+  const translation = extractText(translationProp);
+
+  if (!vocab || !sentence) {
+    skippedMissing++;
+    continue;
+  }
+
+  // 3️⃣ 추가일 (created_time)
+  const addedDateProp = findProp(props, "추가일");
+
+  console.log(
+    "[DEBUG 추가일]",
+    vocab,
+    addedDateProp?.type,
+    addedDateProp
+  );
+  
+  const addedDate =
+    addedDateProp?.type === "date"
+      ? addedDateProp.date?.start
+      : null;
+
+  // 4️⃣ 질문 생성
+  const q = buildQuestionFromRow(
+    vocab,
+    sentence,
+    meaning,
+    translation,
+    addedDate
+  );
+
+  if (!q) {
+    skippedMissing++;
+    continue;
+  }
+
+  questions.push(q);
+}
 
   const wordCount = pages.length - skippedNoWordTag;
   console.log(
@@ -251,6 +273,8 @@ async function buildQuestionsFile() {
   }
 
   const objectLiterals = questions.map(buildObjectLiteral).join(",\n");
+
+  
 
   const fileContent =
     "// questions.js\n\n" +

@@ -1,10 +1,24 @@
 // app.js
 
+
+function getTodayKST() {
+  const now = new Date();
+  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  return kst.toISOString().slice(0, 10);
+}
+
+const TODAY = getTodayKST();
+
 // questions.js에서 QUESTIONS 사용 (전역)
 const QUESTIONS_SOURCE =
   (typeof QUESTIONS !== "undefined" && Array.isArray(QUESTIONS))
     ? QUESTIONS
     : [];
+
+const AVAILABLE_QUESTIONS = QUESTIONS_SOURCE.filter(
+  q => q.addedDate && q.addedDate <= TODAY
+);
+
 
 // DOM 요소
 const card = document.getElementById("card");
@@ -45,7 +59,7 @@ function shuffle(array) {
 
 // 세션용 문제 10개 (질문이 10개 미만이면 전체 사용)
 function pickSessionQuestions(limit = 10) {
-  const copy = [...QUESTIONS_SOURCE];
+  const copy = [...AVAILABLE_QUESTIONS];
   shuffle(copy);
   const realLimit = Math.min(limit, copy.length);
   return copy.slice(0, realLimit);
@@ -68,7 +82,7 @@ function normaliseWithSpace(str) {
 
 // 공백 제거 (띄어쓰기 없이 쳐도 정답 인정용)
 function normaliseWithoutSpace(str) {
-  return normaliseBase(str).replace(/\s+/g, "");
+  return normaliseBase(str).replace(/[\s-]/g, "");
 }
 
 // -------------------- 패턴(언더바) 세팅 --------------------
@@ -85,15 +99,19 @@ function setupPattern(answer) {
     return;
   }
 
-  const words = trimmed.split(/\s+/);
+  // 🔥 핵심: 글자 단위로 슬롯 구조만 생성
+  const chars = trimmed.split("");
 
-  words.forEach((word, wi) => {
-    for (let i = 0; i < word.length; i++) {
-      slots.push({ isSpace: false });
+  chars.forEach((ch) => {
+    if (ch === " ") {
+      slots.push({ type: "space" });
+    } 
+    else if (ch === "-") {
+      slots.push({ type: "hyphen", value: "-" });
+    } 
+    else {
+      slots.push({ type: "char" });
       totalSlots++;
-    }
-    if (wi < words.length - 1) {
-      slots.push({ isSpace: true }); // 단어 사이 시각적 공백
     }
   });
 
@@ -102,7 +120,7 @@ function setupPattern(answer) {
 
 // 현재 typedRaw를 기준으로 슬롯 렌더링
 function renderSlots() {
-  const typed = typedRaw.replace(/\s/g, ""); // 공백 제거
+  const typed = typedRaw.replace(/[\s-]/g, "");
   const caretIndex = Math.min(typed.length, totalSlots);
 
   slotsContainer.innerHTML = "";
@@ -111,10 +129,15 @@ function renderSlots() {
   slots.forEach((slot) => {
     const span = document.createElement("span");
 
-    if (slot.isSpace) {
+    if (slot.type === "space") {
       span.className = "char-slot space-slot";
       span.textContent = "";
-    } else {
+    } 
+    else if (slot.type === "hyphen") {
+      span.className = "char-slot fixed-slot";
+      span.textContent = "-";
+    } 
+    else {
       span.className = "char-slot";
 
       if (letterIndex < typed.length) {
@@ -132,8 +155,8 @@ function renderSlots() {
 
     slotsContainer.appendChild(span);
   });
-}
 
+} // ✅ 이 닫는 중괄호가 빠져 있었음
 // 정답 전체를 슬롯 스타일로 보여주기 (폰트/스타일 동일)
 function renderFullAnswer(answer) {
   const text = answer || "";
@@ -194,6 +217,9 @@ function setSentence(q) {
 
   progressEl.textContent = `Q ${currentIndex + 1} / ${questions.length}`;
   scoreEl.textContent = `Score: ${correctCount}`;
+
+  progressEl.textContent =
+    `오늘까지 공개된 단어 ${AVAILABLE_QUESTIONS.length}개 중 Q ${currentIndex + 1}`;
 }
 
 // 다음 문제
@@ -343,6 +369,20 @@ function focusMobileInput() {
 
 function resetAll() {
   questions = pickSessionQuestions(10);
+
+
+  if (questions.length === 0) {
+    prefixEl.textContent = "⏳ 오늘의 단어는 자정에 공개됩니다";
+    suffixEl.textContent = "";
+    meaningEl.textContent = "";
+    slotsContainer.innerHTML = "";
+    progressEl.textContent = "";
+    statusEl.textContent = "";
+    scoreEl.textContent = "";
+    return;
+  }
+
+  
   currentIndex = 0;
   correctCount = 0;
   wrongCount = 0;
@@ -375,7 +415,7 @@ function applyChar(rawCh) {
   let ch = rawCh;
 
   // 지금까지 입력한 글자 수(공백 제외)
-  const lettersCount = typedRaw.replace(/\s/g, "").length;
+  const lettersCount = typedRaw.replace(/[\s-]/g, "").length;
   if (lettersCount >= totalSlots) return; // 슬롯 초과 방지
 
   // 스페이스 처리
@@ -490,4 +530,5 @@ document.getElementById("retryBtn").addEventListener("click", () => {
 });
 
 // 시작
-resetAll();
+resetAll()
+
