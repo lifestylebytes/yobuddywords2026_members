@@ -18,6 +18,7 @@ const QUESTIONS_SOURCE =
 const AVAILABLE_QUESTIONS = QUESTIONS_SOURCE.filter(
   q => q.addedDate && q.addedDate <= TODAY
 );
+const VOICE_TEST_QUESTIONS = QUESTIONS_SOURCE;
 
 
 // DOM 요소
@@ -66,8 +67,9 @@ function shuffle(array) {
 
 // 세션용 문제 10개 (질문이 10개 미만이면 전체 사용)
 function pickSessionQuestions(limit = 2) {
-  const realLimit = Math.min(limit, AVAILABLE_QUESTIONS.length);
-  return AVAILABLE_QUESTIONS.slice(0, realLimit);
+  const source = VOICE_TEST_QUESTIONS.length ? VOICE_TEST_QUESTIONS : AVAILABLE_QUESTIONS;
+  const realLimit = Math.min(limit, source.length);
+  return source.slice(0, realLimit);
 }
 
 // 문자열 정규화 기본

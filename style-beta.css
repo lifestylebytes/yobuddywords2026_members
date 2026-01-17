@@ -345,6 +345,7 @@ body {
   font-size: 11px;
   color: #8a8fa4;
   word-break: break-all;
+  white-space: pre-wrap;
 }
 
 .meta {
