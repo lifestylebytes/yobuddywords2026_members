@@ -8,6 +8,7 @@ function getTodayKST() {
 }
 
 const TODAY = getTodayKST();
+const FINAL_BUTTON_DATE = "2026-02-01";
 
 // questions.js에서 QUESTIONS 사용 (전역)
 const QUESTIONS_SOURCE =
@@ -32,6 +33,7 @@ const scoreEl = document.getElementById("score");
 const skipBtn = document.getElementById("skipBtn");
 const resetBtn = document.getElementById("resetBtn");
 const mobileInput = document.getElementById("mobileInput");
+const finalLinkWrap = document.getElementById("finalLinkWrap");
 
 // 상태값
 let questions = [];
@@ -417,6 +419,11 @@ function resetAll() {
   focusMobileInput();   // ✅ 모바일 인풋 포커스
 }
 
+function updateFinalLinkVisibility() {
+  if (!finalLinkWrap) return;
+  finalLinkWrap.classList.toggle("hidden", TODAY < FINAL_BUTTON_DATE);
+}
+
 // 🔤 실제로 한 글자 입력 처리 (PC/모바일 공통)
 function applyChar(rawCh) {
   let ch = rawCh;
@@ -538,3 +545,4 @@ document.getElementById("retryBtn").addEventListener("click", () => {
 
 // 시작
 resetAll()
+updateFinalLinkVisibility();

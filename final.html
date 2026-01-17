@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>You Buddy 2026 Final Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="final.css?v=20260201" />
+</head>
+<body>
+  <div class="card exam-card">
+    <header class="exam-header">
+      <div class="eyebrow">유버디 영단어 챌린지 1월</div>
+      <div class="title">Final Test</div>
+      <div class="subtitle">You Buddy 2026 • Members Only</div>
+      <div class="exam-meta">
+        <span id="examDate"></span>
+        <span>총 30문항</span>
+      </div>
+    </header>
+
+    <section id="gateMessage" class="gate hidden">
+      <div class="gate-title">⏳ 아직 공개 전입니다</div>
+      <div class="gate-text">2026-02-01에 오픈됩니다.</div>
+      <a class="back-link" href="index.html">메인으로 돌아가기</a>
+    </section>
+
+    <section id="nameGate" class="gate hidden">
+      <div class="gate-title">이름을 입력해 주세요</div>
+      <div class="gate-text">한 번 제출하면 동일 이름으로 다시 응시할 수 없어요.</div>
+      <form id="nameForm" class="name-form">
+        <input
+          type="text"
+          id="participantName"
+          class="name-input"
+          placeholder="이름 입력"
+          autocomplete="off"
+        />
+        <button class="btn" type="submit">시험 시작</button>
+      </form>
+      <div id="nameError" class="name-error"></div>
+      <a class="back-link" href="index.html">메인으로 돌아가기</a>
+    </section>
+
+    <form id="examForm" class="exam-form hidden">
+      <section class="section">
+        <div class="section-title">OX (5)</div>
+        <ol id="oxList" class="question-list"></ol>
+      </section>
+
+      <section class="section">
+        <div class="section-title">객관식 (10)</div>
+        <ol id="multiList" class="question-list"></ol>
+      </section>
+
+      <section class="section">
+        <div class="section-title">빈칸 채우기 (10)</div>
+        <ol id="fillList" class="question-list"></ol>
+      </section>
+
+      <section class="section">
+        <div class="section-title">작문 (5)</div>
+        <div class="section-note">
+          배운 표현을 최대한 활용해서 아래 작문을 해보세요. 정확한 답은 없으나 최대한 맞춰주면 좋아요.
+        </div>
+        <ol id="writeList" class="question-list"></ol>
+      </section>
+
+      <div class="submit-row">
+        <button class="btn primary-btn" id="submitBtn" type="submit">채점하기</button>
+        <div class="submit-note">제출 후에는 수정할 수 없습니다.</div>
+      </div>
+    </form>
+
+  </div>
+
+  <div id="resultModal" class="modal hidden">
+    <div class="modal-content result-content">
+      <div class="result-title">채점 결과</div>
+      <div id="scoreNameLine" class="result-name-line"></div>
+      <div class="result-hero">
+        <div id="scorePercent" class="score-percent"></div>
+        <div id="scoreSummary" class="result-summary"></div>
+      </div>
+      <div class="result-message">한 달 동안 정말 수고했어요. 오늘도 멋지게 마무리했어요!</div>
+      <div class="result-note">작문은 자동 채점되지 않아요. 아래에서 제출 답안을 확인해 주세요.</div>
+      <div id="writeReview" class="write-review"></div>
+      <div id="reviewTitle" class="review-title hidden">다시 복습할 단어</div>
+      <div id="reviewList" class="review-list"></div>
+      <div class="review-actions">
+        <button class="btn ghost-btn" id="copyReviewBtn" type="button">⧉ 복사하기</button>
+        <button class="btn ghost-btn" id="emailReviewBtn" type="button">💌 이메일 보내기</button>
+      </div>
+      <a class="back-link" href="index.html">메인으로 돌아가기</a>
+    </div>
+  </div>
+
+  <div id="completionModal" class="modal hidden">
+    <div class="modal-content result-content">
+      <div class="result-title">챌린지 테스트 완료 🎉</div>
+      <div class="result-message">이미 제출한 기록이 있어 재응시할 수 없습니다.</div>
+      <div class="result-note">정말 수고했어요. 다음 챌린지에서 또 만나요!</div>
+      <div class="completion-actions">
+        <a class="back-link" href="javascript:history.back()">뒤로가기</a>
+        <a class="back-link" href="index.html">메인으로 돌아가기</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="questions.js?v=20260201"></script>
+  <script src="final-participants.js?v=20260201"></script>
+  <script src="final-config.js?v=20260201"></script>
+  <script src="final-questions.js?v=20260201"></script>
+  <script src="final.js?v=20260201"></script>
+</body>
+</html>
