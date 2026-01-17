@@ -567,3 +567,38 @@ body {
   height: 1px;
   /* iOS에서 완전 0px이면 무시되는 경우가 있어서 1px 유지 */
 }
+
+/* ---------- 베타 전용: Voice 버튼 스타일 ---------- */
+
+.bottom-row {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.voice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.voice-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.voice-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #cfd3e6;
+}
+
+.voice-beta {
+  font-size: 11px;
+  color: #9aa0b4;
+}
+
+.voice-btn.listening .voice-dot {
+  background: #ff7a90;
+  box-shadow: 0 0 0 4px rgba(255, 122, 144, 0.24);
+}

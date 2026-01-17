@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>You Buddy 2026 단어 테스트</title>
+  <title>You Buddy 2026 단어 테스트 (Beta)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style-beta.css" />
 </head>
 <body>
   <div class="card" id="card">
@@ -29,7 +29,7 @@
       </div>
 
       <div class="right-actions">
-        <a class="beta-link" href="beta.html">Beta 테스트</a>
+        <a class="beta-link" href="index.html">메인으로</a>
         <button class="mode-pill" id="resetBtn" type="button">
           <div class="mode-dot"></div>
           <span>Reset</span>
@@ -66,6 +66,11 @@
 
     <div class="bottom-row">
       <button class="btn" id="skipBtn">정답 보기</button>
+      <button class="btn voice-btn" id="voiceBtn" type="button">
+        <span class="voice-dot" aria-hidden="true"></span>
+        <span class="voice-label">Voice</span>
+        <span class="voice-beta">(Beta)</span>
+      </button>
     </div>
     <p class="typing-hint">
       화면의 빈칸에 바로 타이핑하고 Enter를 눌러보세요
@@ -102,6 +107,6 @@
 
 
   <script src="questions.js"></script>
-  <script src="app.js"></script>
+  <script src="app-beta.js"></script>
 </body>
 </html>
