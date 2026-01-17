@@ -482,7 +482,6 @@ async function toggleVoiceInput() {
       showVoiceNote("다시 말해 주세요.");
     }
     const ok = await ensureMicAccess();
-    if (!ok) return;
     try {
       recognition.start();
     } catch (e) {
