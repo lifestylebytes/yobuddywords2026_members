@@ -28,6 +28,7 @@ const meaningEl = document.getElementById("meaning");
 const slotsContainer = document.getElementById("slotsContainer");
 const statusEl = document.getElementById("status");
 const debugStatusEl = document.getElementById("debugStatus");
+const debugLog = [];
 const progressEl = document.getElementById("progress");
 const scoreEl = document.getElementById("score");
 const skipBtn = document.getElementById("skipBtn");
@@ -386,7 +387,7 @@ function updateVoiceUI(listening) {
   if (voiceLabel) {
     voiceLabel.textContent = listening ? "듣는 중..." : "Voice";
   }
-  updateDebug(`listening=${listening}`);
+  logDebug(`listening=${listening}`);
 }
 
 function showVoiceNote(text, isError = false) {
@@ -428,7 +429,7 @@ function setupSpeechRecognition() {
     updateVoiceUI(false);
     stopMicStream();
     const detail = event && event.error ? ` (${event.error})` : "";
-    updateDebug(`error=${event && event.error ? event.error : "unknown"}`);
+    logDebug(`error=${event && event.error ? event.error : "unknown"}`);
     showVoiceNote(`음성 인식을 시작할 수 없어요.${detail}`, true);
   });
   rec.addEventListener("result", (event) => {
@@ -436,7 +437,7 @@ function setupSpeechRecognition() {
       .map(result => result[0].transcript)
       .join(" ");
     applySpeechText(transcript);
-    updateDebug(`result=${transcript}`);
+    logDebug(`result=${transcript}`);
   });
 
   return rec;
@@ -452,16 +453,16 @@ async function ensureMicAccess() {
   if (micStream) return true;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     showVoiceNote("마이크 접근을 지원하지 않는 브라우저예요.", true);
-    updateDebug("getUserMedia=unsupported");
+    logDebug("getUserMedia=unsupported");
     return false;
   }
   try {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    updateDebug("getUserMedia=ok");
+    logDebug("getUserMedia=ok");
     return true;
   } catch (e) {
     showVoiceNote("마이크 권한이 필요해요.", true);
-    updateDebug(`getUserMedia=error`);
+    logDebug(`getUserMedia=error`);
     return false;
   }
 }
@@ -474,7 +475,7 @@ async function toggleVoiceInput() {
       voiceBtn.disabled = true;
       if (voiceLabel) voiceLabel.textContent = "Voice 미지원";
       showVoiceNote("이 브라우저는 음성 인식을 지원하지 않아요.", true);
-      updateDebug("SpeechRecognition=unsupported");
+      logDebug("SpeechRecognition=unsupported");
       return;
     }
   }
@@ -491,18 +492,49 @@ async function toggleVoiceInput() {
     const ok = await ensureMicAccess();
     try {
       recognition.start();
-      updateDebug("start=ok");
+      logDebug("start=ok");
     } catch (e) {
       updateVoiceUI(false);
       stopMicStream();
       showVoiceNote("음성 인식 시작에 실패했어요.", true);
-      updateDebug("start=error");
+      logDebug("start=error");
     }
   }
 }
 
-function updateDebug(message) {
+function logDebug(message) {
+  debugLog.push(message);
+  if (debugLog.length > 6) {
+    debugLog.shift();
+  }
+  renderDebug();
+}
+
+function renderDebug() {
   if (!debugStatusEl) return;
+  const ua = navigator.userAgent || "unknown";
+  const srSupported = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  const gumSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  const lines = [
+    `UA: ${ua}`,
+    `secureContext=${window.isSecureContext}`,
+    `SpeechRecognition=${srSupported}`,
+    `getUserMedia=${gumSupported}`
+  ];
+  debugLog.forEach((msg) => lines.push(`[debug] ${msg}`));
+  debugStatusEl.textContent = lines.join("\n");
+}
+
+async function checkMicPermission() {
+  if (!navigator.permissions || !navigator.permissions.query) return;
+  try {
+    const result = await navigator.permissions.query({ name: "microphone" });
+    logDebug(`permission=${result.state}`);
+  } catch (e) {}
+}
+
+renderDebug();
+checkMicPermission();
   const ua = navigator.userAgent || "unknown";
   debugStatusEl.textContent = `[debug] ${message} | UA: ${ua}`;
 }
