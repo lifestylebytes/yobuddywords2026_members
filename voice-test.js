@@ -27,6 +27,7 @@ const suffixEl = document.getElementById("sentenceSuffix");
 const meaningEl = document.getElementById("meaning");
 const slotsContainer = document.getElementById("slotsContainer");
 const statusEl = document.getElementById("status");
+const debugStatusEl = document.getElementById("debugStatus");
 const progressEl = document.getElementById("progress");
 const scoreEl = document.getElementById("score");
 const skipBtn = document.getElementById("skipBtn");
@@ -385,6 +386,7 @@ function updateVoiceUI(listening) {
   if (voiceLabel) {
     voiceLabel.textContent = listening ? "듣는 중..." : "Voice";
   }
+  updateDebug(`listening=${listening}`);
 }
 
 function showVoiceNote(text, isError = false) {
@@ -422,16 +424,19 @@ function setupSpeechRecognition() {
     updateVoiceUI(false);
     stopMicStream();
   });
-  rec.addEventListener("error", () => {
+  rec.addEventListener("error", (event) => {
     updateVoiceUI(false);
     stopMicStream();
-    showVoiceNote("음성 인식을 시작할 수 없어요.", true);
+    const detail = event && event.error ? ` (${event.error})` : "";
+    updateDebug(`error=${event && event.error ? event.error : "unknown"}`);
+    showVoiceNote(`음성 인식을 시작할 수 없어요.${detail}`, true);
   });
   rec.addEventListener("result", (event) => {
     const transcript = Array.from(event.results)
       .map(result => result[0].transcript)
       .join(" ");
     applySpeechText(transcript);
+    updateDebug(`result=${transcript}`);
   });
 
   return rec;
@@ -447,13 +452,16 @@ async function ensureMicAccess() {
   if (micStream) return true;
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     showVoiceNote("마이크 접근을 지원하지 않는 브라우저예요.", true);
+    updateDebug("getUserMedia=unsupported");
     return false;
   }
   try {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    updateDebug("getUserMedia=ok");
     return true;
   } catch (e) {
     showVoiceNote("마이크 권한이 필요해요.", true);
+    updateDebug(`getUserMedia=error`);
     return false;
   }
 }
@@ -466,6 +474,7 @@ async function toggleVoiceInput() {
       voiceBtn.disabled = true;
       if (voiceLabel) voiceLabel.textContent = "Voice 미지원";
       showVoiceNote("이 브라우저는 음성 인식을 지원하지 않아요.", true);
+      updateDebug("SpeechRecognition=unsupported");
       return;
     }
   }
@@ -482,12 +491,20 @@ async function toggleVoiceInput() {
     const ok = await ensureMicAccess();
     try {
       recognition.start();
+      updateDebug("start=ok");
     } catch (e) {
       updateVoiceUI(false);
       stopMicStream();
       showVoiceNote("음성 인식 시작에 실패했어요.", true);
+      updateDebug("start=error");
     }
   }
+}
+
+function updateDebug(message) {
+  if (!debugStatusEl) return;
+  const ua = navigator.userAgent || "unknown";
+  debugStatusEl.textContent = `[debug] ${message} | UA: ${ua}`;
 }
 
 // -------------------- Reset --------------------
@@ -650,7 +667,26 @@ document.addEventListener("keydown", handleKey);
 skipBtn.addEventListener("click", revealAndNext);
 resetBtn.addEventListener("click", resetAll);
 if (voiceBtn) {
-  voiceBtn.addEventListener("click", toggleVoiceInput);
+  voiceBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+    if (mobileInput && mobileInput.blur) {
+      mobileInput.blur();
+    }
+    toggleVoiceInput();
+  });
+  voiceBtn.addEventListener("touchstart", (e) => {
+    e.stopPropagation();
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+    if (mobileInput && mobileInput.blur) {
+      mobileInput.blur();
+    }
+  });
 }
 
 window.addEventListener("pagehide", () => {

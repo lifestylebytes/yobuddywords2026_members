@@ -341,6 +341,12 @@ body {
   color: #d26b7b;
 }
 
+.debug-status {
+  font-size: 11px;
+  color: #8a8fa4;
+  word-break: break-all;
+}
+
 .meta {
   display: flex;
   justify-content: space-between;
