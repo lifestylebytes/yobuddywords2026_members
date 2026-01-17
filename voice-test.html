@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>You Buddy 2026 Voice Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style-beta.css?v=20260201" />
+</head>
+<body>
+  <div class="card" id="card">
+
+    <div class="top-row">
+      <div class="left-header">
+        <div class="members-tag">*voice test only</div>
+
+        <a
+          href="https://www.notion.so/2d81fc05de1e81d0b9f5d4ce43d92e1a?v=2d81fc05de1e817b950d000c0ca803aa&source=copy_link"
+          target="_blank"
+          class="badge-link"
+        >
+          <div class="badge">
+            <div class="badge-avatar">YB</div>
+            <div class="badge-text">
+              <span>You Buddy English</span>
+              <span>📎 유버디 단어장 바로가기</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="right-actions">
+        <button class="mode-pill" id="resetBtn" type="button">
+          <div class="mode-dot"></div>
+          <span>Reset</span>
+        </button>
+      </div>
+    </div>
+    <div class="sentence-card">
+      <div class="sentence-line">
+        
+        <div class="line-part" id="sentencePrefix"></div>
+
+        <div class="answer-pill-wrapper">
+          <span class="answer-pill">
+            <span class="answer-visual-inner" id="slotsContainer"></span>
+          </span>
+        </div>
+
+        <div class="line-part" id="sentenceSuffix"></div>
+      </div>
+
+      <div class="meaning" id="meaning"></div>
+    </div>
+
+    <input
+      type="text"
+      id="mobileInput"
+      class="mobile-input"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    />
+
+
+    <div class="bottom-row">
+      <button class="btn" id="skipBtn">정답 보기</button>
+      <button class="btn voice-btn" id="voiceBtn" type="button">
+        <span class="voice-dot" aria-hidden="true"></span>
+        <span class="voice-label">Voice</span>
+        <span class="voice-beta">(Beta)</span>
+      </button>
+    </div>
+    <p class="typing-hint">
+      화면의 빈칸에 바로 타이핑하고 Enter를 눌러보세요
+    </p>
+
+    <div class="status" id="status"></div>
+    <div class="meta">
+      <span id="progress"></span>
+      <span id="score"></span>
+    </div>
+  </div>
+
+  <div id="resultModal" class="modal hidden">
+    <div class="modal-content">
+
+      <div id="modalMessage" class="modal-message"></div>
+
+      <ul id="reviewList" class="review-list"></ul>
+
+      <div class="modal-buttons">
+        <button id="retryBtn" class="retry-btn">🔄 다시하기</button>
+
+        <a 
+          href="https://www.notion.so/2d81fc05de1e81d0b9f5d4ce43d92e1a?v=2d81fc05de1e817b950d000c0ca803aa"
+          target="_blank"
+          class="notion-btn"
+        >
+          📘 유버디 단어장 바로가기
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script src="questions.js?v=20260201"></script>
+  <script src="voice-test.js?v=20260201"></script>
+</body>
+</html>
