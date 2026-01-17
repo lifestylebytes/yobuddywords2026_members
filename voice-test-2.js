@@ -43,8 +43,6 @@ const meaningEl = document.getElementById("meaning");
 const slotsContainer = document.getElementById("slotsContainer");
 const statusEl = document.getElementById("status");
 const debugStatusEl = document.getElementById("debugStatus");
-const fallbackNote = document.getElementById("fallbackNote");
-const fallbackInput = document.getElementById("fallbackInput");
 const debugLog = [];
 if (statusEl) {
   statusEl.textContent = "Voice test v2 loaded";
@@ -421,9 +419,24 @@ function showVoiceNote(text, isError = false) {
 function applySpeechText(text) {
   const cleaned = normaliseBase(text);
   if (!cleaned) return;
+
+  let letters = 0;
+  let next = "";
   for (const ch of cleaned) {
-    applyChar(ch);
+    if (/[a-zA-Z]/.test(ch)) {
+      if (letters >= totalSlots) break;
+      next += ch.toLowerCase();
+      letters++;
+      continue;
+    }
+    if (ch === " " || ch === "-" || ch === "'" || ch === ";" || ch === ":") {
+      next += ch;
+    }
   }
+
+  typedRaw = next;
+  finished = false;
+  renderSlots();
 }
 
 function isAnswerFilled() {
@@ -532,9 +545,8 @@ async function toggleVoiceInput() {
 function startListenTimer() {
   clearListenTimer();
   listenTimer = setTimeout(() => {
-    showVoiceNote("인식 결과가 없어요. 키보드 음성 입력을 사용해 주세요.", true);
+    showVoiceNote("인식 결과가 없어요. 다시 시도해 주세요.", true);
     logDebug("timeout=no-result");
-    showFallbackInput();
     try {
       if (recognition) recognition.stop();
     } catch (e) {}
@@ -582,13 +594,6 @@ async function checkMicPermission() {
 renderDebug();
 checkMicPermission();
 
-function showFallbackInput() {
-  if (fallbackNote) fallbackNote.classList.remove("hidden");
-  if (fallbackInput) {
-    fallbackInput.classList.remove("hidden");
-    fallbackInput.focus();
-  }
-}
 
 // -------------------- Reset --------------------
 
@@ -772,16 +777,6 @@ if (voiceBtn) {
   });
 }
 
-if (fallbackInput) {
-  fallbackInput.addEventListener("input", (e) => {
-    const value = e.target.value;
-    if (!value) return;
-    for (const ch of value) {
-      applyChar(ch);
-    }
-    e.target.value = "";
-  });
-}
 
 window.addEventListener("pagehide", () => {
   if (recognition && isListening) {
