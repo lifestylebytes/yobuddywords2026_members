@@ -43,6 +43,8 @@ const meaningEl = document.getElementById("meaning");
 const slotsContainer = document.getElementById("slotsContainer");
 const statusEl = document.getElementById("status");
 const debugStatusEl = document.getElementById("debugStatus");
+const fallbackNote = document.getElementById("fallbackNote");
+const fallbackInput = document.getElementById("fallbackInput");
 const debugLog = [];
 if (statusEl) {
   statusEl.textContent = "Voice test v2 loaded";
@@ -71,6 +73,7 @@ let wrongWords = [];
 let recognition = null;
 let isListening = false;
 let micStream = null;
+let listenTimer = null;
 
 // -------------------- 유틸 & 세션 문제 선택 --------------------
 
@@ -443,6 +446,7 @@ function setupSpeechRecognition() {
   rec.addEventListener("end", () => {
     updateVoiceUI(false);
     stopMicStream();
+    clearListenTimer();
   });
   rec.addEventListener("error", (event) => {
     updateVoiceUI(false);
@@ -450,6 +454,7 @@ function setupSpeechRecognition() {
     const detail = event && event.error ? ` (${event.error})` : "";
     logDebug(`error=${event && event.error ? event.error : "unknown"}`);
     showVoiceNote(`음성 인식을 시작할 수 없어요.${detail}`, true);
+    clearListenTimer();
   });
   rec.addEventListener("result", (event) => {
     const transcript = Array.from(event.results)
@@ -457,6 +462,7 @@ function setupSpeechRecognition() {
       .join(" ");
     applySpeechText(transcript);
     logDebug(`result=${transcript}`);
+    clearListenTimer();
   });
 
   return rec;
@@ -512,13 +518,33 @@ async function toggleVoiceInput() {
     try {
       recognition.start();
       logDebug("start=ok");
+      startListenTimer();
     } catch (e) {
       updateVoiceUI(false);
       stopMicStream();
       showVoiceNote("음성 인식 시작에 실패했어요.", true);
       logDebug("start=error");
+      clearListenTimer();
     }
   }
+}
+
+function startListenTimer() {
+  clearListenTimer();
+  listenTimer = setTimeout(() => {
+    showVoiceNote("인식 결과가 없어요. 키보드 음성 입력을 사용해 주세요.", true);
+    logDebug("timeout=no-result");
+    showFallbackInput();
+    try {
+      if (recognition) recognition.stop();
+    } catch (e) {}
+  }, 6000);
+}
+
+function clearListenTimer() {
+  if (!listenTimer) return;
+  clearTimeout(listenTimer);
+  listenTimer = null;
 }
 
 function logDebug(message) {
@@ -555,6 +581,14 @@ async function checkMicPermission() {
 
 renderDebug();
 checkMicPermission();
+
+function showFallbackInput() {
+  if (fallbackNote) fallbackNote.classList.remove("hidden");
+  if (fallbackInput) {
+    fallbackInput.classList.remove("hidden");
+    fallbackInput.focus();
+  }
+}
 
 // -------------------- Reset --------------------
 
@@ -735,6 +769,17 @@ if (voiceBtn) {
     if (mobileInput && mobileInput.blur) {
       mobileInput.blur();
     }
+  });
+}
+
+if (fallbackInput) {
+  fallbackInput.addEventListener("input", (e) => {
+    const value = e.target.value;
+    if (!value) return;
+    for (const ch of value) {
+      applyChar(ch);
+    }
+    e.target.value = "";
   });
 }
 

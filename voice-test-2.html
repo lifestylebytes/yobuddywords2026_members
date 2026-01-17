@@ -77,6 +77,16 @@
 
     <div class="status" id="status"></div>
     <div class="status debug-status" id="debugStatus"></div>
+    <div class="status fallback-note hidden" id="fallbackNote">
+      음성 인식이 어려울 수 있어요. 아래 입력칸을 눌러 키보드 음성 입력(마이크)을 사용해 주세요.
+    </div>
+    <input
+      type="text"
+      id="fallbackInput"
+      class="fallback-input"
+      placeholder="여기에 말하기로 입력해 보세요"
+      autocomplete="off"
+    />
     <div class="meta">
       <span id="progress"></span>
       <span id="score"></span>
