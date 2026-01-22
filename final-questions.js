@@ -89,16 +89,27 @@
     };
   });
 
-  const multi = multiBase.map((item, index) => {
-    const baseIndex = 5 + index;
-    const distractors = [
-      fixedSource[(baseIndex + 1) % fixedSource.length],
-      fixedSource[(baseIndex + 2) % fixedSource.length],
-      fixedSource[(baseIndex + 3) % fixedSource.length]
-    ]
-      .filter(Boolean)
-      .map(x => x.answer);
+  if (ox.length >= 5) {
+    [ox[0], ox[4]] = [ox[4], ox[0]];
+  }
 
+  function getUniqueAnswerPool(exclude) {
+    const pool = fixedSource
+      .map(item => item.answer)
+      .filter(Boolean)
+      .filter(answer => answer !== exclude);
+    return Array.from(new Set(pool));
+  }
+
+  function pickUniqueAnswers(exclude, count, seed) {
+    const pool = getUniqueAnswerPool(exclude);
+    if (pool.length === 0) return [];
+    const shuffled = seededShuffle(pool, seed);
+    return shuffled.slice(0, Math.min(count, shuffled.length));
+  }
+
+  const multi = multiBase.map((item, index) => {
+    const distractors = pickUniqueAnswers(item.answer, 3, index + 21);
     const options = seededShuffle([item.answer, ...distractors], index + 21);
     return {
       sentence: `${item.prefix} ____ ${item.suffix}`.replace(/\s+/g, " ").trim(),

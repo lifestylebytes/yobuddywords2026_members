@@ -21,6 +21,17 @@
     <section id="gateMessage" class="gate hidden">
       <div class="gate-title">⏳ 아직 공개 전입니다</div>
       <div class="gate-text">2026-02-01에 오픈됩니다.</div>
+      <form id="devCodeForm" class="dev-code-form">
+        <input
+          type="text"
+          id="devCodeInput"
+          class="name-input"
+          placeholder="2월 1일 공개됩니다"
+          autocomplete="off"
+        />
+        <button class="btn" type="submit">입장 코드 확인</button>
+      </form>
+      <div id="devCodeError" class="name-error"></div>
       <a class="back-link" href="index.html">메인으로 돌아가기</a>
     </section>
 
@@ -82,8 +93,8 @@
         <div id="scoreSummary" class="result-summary"></div>
       </div>
       <div class="result-message">한 달 동안 정말 수고했어요. 오늘도 멋지게 마무리했어요!</div>
-      <div class="result-note">작문은 자동 채점되지 않아요. 아래에서 제출 답안을 확인해 주세요.</div>
-      <div id="writeReview" class="write-review"></div>
+      <div class="result-note">전체 채점 결과</div>
+      <div id="fullReview" class="full-review"></div>
       <div id="reviewTitle" class="review-title hidden">다시 복습할 단어</div>
       <div id="reviewList" class="review-list"></div>
       <div class="review-actions">

@@ -75,6 +75,27 @@ module.exports = async (req, res) => {
     }
   };
 
+  const schemaRes = await fetch(`${NOTION_API_BASE}/databases/${DATABASE_ID}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${NOTION_SECRET}`,
+      "Notion-Version": NOTION_VERSION
+    }
+  });
+
+  if (!schemaRes.ok) {
+    const text = await schemaRes.text();
+    res.statusCode = 502;
+    res.end(text);
+    return;
+  }
+
+  const schema = await schemaRes.json();
+  const allowedProps = new Set(Object.keys(schema.properties || {}));
+  const filteredProperties = Object.fromEntries(
+    Object.entries(properties).filter(([key]) => allowedProps.has(key))
+  );
+
   const notionRes = await fetch(`${NOTION_API_BASE}/pages`, {
     method: "POST",
     headers: {
@@ -84,7 +105,7 @@ module.exports = async (req, res) => {
     },
     body: JSON.stringify({
       parent: { database_id: DATABASE_ID },
-      properties
+      properties: filteredProperties
     })
   });
 

@@ -421,7 +421,7 @@ function resetAll() {
 
 function updateFinalLinkVisibility() {
   if (!finalLinkWrap) return;
-  finalLinkWrap.classList.toggle("hidden", TODAY < FINAL_BUTTON_DATE);
+  finalLinkWrap.classList.remove("hidden");
 }
 
 // 🔤 실제로 한 글자 입력 처리 (PC/모바일 공통)

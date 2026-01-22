@@ -7,6 +7,7 @@ function getTodayKST() {
 }
 
 const RELEASE_DATE = "2026-02-01";
+const DEV_CODE = "222";
 const today = getTodayKST();
 const params = new URLSearchParams(window.location.search);
 const isPreview = params.get("preview") === "1";
@@ -25,11 +26,15 @@ const nameGate = document.getElementById("nameGate");
 const nameForm = document.getElementById("nameForm");
 const nameInput = document.getElementById("participantName");
 const nameError = document.getElementById("nameError");
+const devCodeForm = document.getElementById("devCodeForm");
+const devCodeInput = document.getElementById("devCodeInput");
+const devCodeError = document.getElementById("devCodeError");
 const resultModal = document.getElementById("resultModal");
 const scoreNameLine = document.getElementById("scoreNameLine");
 const scoreSummary = document.getElementById("scoreSummary");
 const scorePercent = document.getElementById("scorePercent");
 const writeReview = document.getElementById("writeReview");
+const fullReview = document.getElementById("fullReview");
 const reviewTitle = document.getElementById("reviewTitle");
 const reviewList = document.getElementById("reviewList");
 const copyReviewBtn = document.getElementById("copyReviewBtn");
@@ -38,6 +43,7 @@ const completionModal = document.getElementById("completionModal");
 
 const USED_NAME_KEY = "finalUsedNames";
 const SUBMIT_KEY = "finalSubmissions";
+const DRAFT_KEY = "finalDrafts";
 let participantName = "";
 
 if (examDateEl) {
@@ -50,10 +56,16 @@ function showGate() {
   if (nameGate) nameGate.classList.add("hidden");
 }
 
+function showNameGate() {
+  if (gateMessage) gateMessage.classList.add("hidden");
+  if (examForm) examForm.classList.add("hidden");
+  if (nameGate) nameGate.classList.remove("hidden");
+}
+
 if (!isPreview && today < RELEASE_DATE) {
   showGate();
 } else {
-  if (nameGate) nameGate.classList.remove("hidden");
+  showNameGate();
 }
 
 if (isPreview) {
@@ -328,6 +340,7 @@ function scoreExam() {
   }
 
   renderReviewList(data);
+  renderFullReview(data, collectAnswers());
 
   saveSubmission({
     name: participantName,
@@ -336,6 +349,7 @@ function scoreExam() {
     submittedAt: new Date().toISOString(),
     answers: collectAnswers()
   });
+  removeDraftByName(participantName);
 }
 
 function renderReviewList(data) {
@@ -363,6 +377,16 @@ function renderReviewList(data) {
     }
   });
 
+  data.write.forEach((item, index) => {
+    const input = document.querySelector(`textarea[name="write-${index}"]`);
+    const text = input ? input.value.trim() : "";
+    const model = item.model || `I will ${item.target} in this situation.`;
+    const similarity = calcSimilarityPercent(text, model);
+    if (similarity < 70) {
+      wrongAnswers.push(item.target || item.answer || item.word || item.prompt);
+    }
+  });
+
   const unique = Array.from(new Set(wrongAnswers));
   reviewList.innerHTML = "";
 
@@ -376,6 +400,337 @@ function renderReviewList(data) {
   }
 
   reviewList.innerHTML = unique.map(word => `<div>${word}</div>`).join("");
+}
+
+function getSubmissions() {
+  try {
+    return JSON.parse(localStorage.getItem(SUBMIT_KEY) || "[]");
+  } catch (e) {
+    return [];
+  }
+}
+
+function getDrafts() {
+  try {
+    return JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}");
+  } catch (e) {
+    return {};
+  }
+}
+
+function getDraftByName(name) {
+  if (!name) return null;
+  const drafts = getDrafts();
+  return drafts[name] || null;
+}
+
+function saveDraftByName(name, payload) {
+  if (!name) return;
+  try {
+    const drafts = getDrafts();
+    drafts[name] = payload;
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+  } catch (e) {}
+}
+
+function removeDraftByName(name) {
+  if (!name) return;
+  try {
+    const drafts = getDrafts();
+    delete drafts[name];
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+  } catch (e) {}
+}
+
+function getLatestSubmissionByName(name) {
+  const list = getSubmissions().filter((item) => item && item.name === name);
+  if (!list.length) return null;
+  return list[list.length - 1];
+}
+
+function buildReviewListFromSubmission(data, submission) {
+  if (!reviewList) return;
+  const wrongAnswers = [];
+
+  const answers = submission?.answers || {};
+  const oxAnswers = Array.isArray(answers.ox) ? answers.ox : [];
+  const multiAnswers = Array.isArray(answers.multi) ? answers.multi : [];
+  const fillAnswers = Array.isArray(answers.fill) ? answers.fill : [];
+  const writeAnswers = Array.isArray(answers.write) ? answers.write : [];
+
+  data.ox.forEach((item, index) => {
+    const selected = oxAnswers[index]?.answer || "";
+    if (selected !== item.answer) {
+      wrongAnswers.push(item.word || item.answer);
+    }
+  });
+
+  data.multi.forEach((item, index) => {
+    const selected = multiAnswers[index]?.answer || "";
+    if (selected !== item.answer) {
+      wrongAnswers.push(item.answer);
+    }
+  });
+
+  data.fill.forEach((item, index) => {
+    const value = fillAnswers[index]?.answer || "";
+    if (normaliseFill(value) !== normaliseFill(item.answer)) {
+      wrongAnswers.push(item.answer);
+    }
+  });
+
+  data.write.forEach((item, index) => {
+    const value = writeAnswers[index]?.answer || "";
+    const model = item.model || `I will ${item.target} in this situation.`;
+    const similarity = calcSimilarityPercent(value, model);
+    if (similarity < 70) {
+      wrongAnswers.push(item.target || item.answer || item.word || item.prompt);
+    }
+  });
+
+  const unique = Array.from(new Set(wrongAnswers));
+  reviewList.innerHTML = "";
+
+  if (reviewTitle) {
+    reviewTitle.classList.toggle("hidden", unique.length === 0);
+  }
+
+  if (unique.length === 0) {
+    reviewList.textContent = "모든 문제를 맞췄습니다! 🎉";
+    return;
+  }
+
+  reviewList.innerHTML = unique.map(word => `<div>${word}</div>`).join("");
+}
+
+function renderFullReview(data, answersSource) {
+  if (!fullReview || !data) return;
+  const answers = answersSource || {};
+  fullReview.innerHTML = "";
+
+  const oxAnswers = Array.isArray(answers.ox) ? answers.ox : [];
+  const multiAnswers = Array.isArray(answers.multi) ? answers.multi : [];
+  const fillAnswers = Array.isArray(answers.fill) ? answers.fill : [];
+  const writeAnswers = Array.isArray(answers.write) ? answers.write : [];
+
+  data.ox.forEach((item, index) => {
+    const userAnswer = (oxAnswers[index]?.answer || "").trim();
+    const correct = userAnswer === item.answer;
+    const number = 1 + index;
+    const row = document.createElement("div");
+    row.className = "review-item";
+    row.innerHTML = `
+      <div class="review-title">${number}. ${item.sentence}</div>
+      <div class="review-row">
+        <div>정답 여부: <span class="${correct ? "correct" : "wrong"}">${correct ? "정답" : "오답"}</span></div>
+        <div>내 답: <span class="${correct ? "correct" : "wrong"}">${escapeHTML(userAnswer || "(미작성)")}</span></div>
+        <div>정답: <span class="correct">${escapeHTML(item.answer)}</span></div>
+      </div>
+    `;
+    fullReview.appendChild(row);
+  });
+
+  data.multi.forEach((item, index) => {
+    const userAnswer = (multiAnswers[index]?.answer || "").trim();
+    const correct = userAnswer === item.answer;
+    const number = 6 + index;
+    const row = document.createElement("div");
+    row.className = "review-item";
+    row.innerHTML = `
+      <div class="review-title">${number}. ${item.sentence}</div>
+      <div class="review-row">
+        <div>정답 여부: <span class="${correct ? "correct" : "wrong"}">${correct ? "정답" : "오답"}</span></div>
+        <div>내 답: <span class="${correct ? "correct" : "wrong"}">${escapeHTML(userAnswer || "(미작성)")}</span></div>
+        <div>정답: <span class="correct">${escapeHTML(item.answer)}</span></div>
+      </div>
+    `;
+    fullReview.appendChild(row);
+  });
+
+  data.fill.forEach((item, index) => {
+    const userAnswer = (fillAnswers[index]?.answer || "").trim();
+    const correct = normaliseFill(userAnswer) === normaliseFill(item.answer);
+    const number = 16 + index;
+    const row = document.createElement("div");
+    row.className = "review-item";
+
+    if (number <= 18) {
+      row.innerHTML = `
+        <div class="review-title">${number}. ${item.sentence}</div>
+        <div class="review-row">
+          <div>정답 여부: <span class="${correct ? "correct" : "wrong"}">${correct ? "정답" : "오답"}</span></div>
+          <div>내 답: <span class="${correct ? "correct" : "wrong"}">${escapeHTML(userAnswer || "(미작성)")}</span></div>
+          <div>정답: <span class="correct">${escapeHTML(item.answer)}</span></div>
+        </div>
+      `;
+    } else {
+      row.innerHTML = `
+        <div class="review-title">${number}. ${item.sentence}</div>
+        <div class="review-row">
+          <div>정답 여부: <span class="${correct ? "correct" : "wrong"}">${correct ? "정답" : "오답"}</span></div>
+          <div>답안은 비공개입니다.</div>
+        </div>
+      `;
+    }
+    fullReview.appendChild(row);
+  });
+
+  data.write.forEach((item, index) => {
+    const userAnswer = (writeAnswers[index]?.answer || "").trim();
+    const model = item.model || `I will ${item.target} in this situation.`;
+    const similarity = calcSimilarityPercent(userAnswer, model);
+    const correct = similarity >= 70;
+    const number = 26 + index;
+    const row = document.createElement("div");
+    row.className = "review-item";
+    row.innerHTML = `
+      <div class="review-title">${number}. ${item.prompt}</div>
+      <div class="review-row">
+        <div>정답 여부: <span class="${correct ? "correct" : "wrong"}">${correct ? "정답" : "오답"}</span></div>
+        <div>답안은 비공개입니다.</div>
+      </div>
+    `;
+    fullReview.appendChild(row);
+  });
+}
+
+function showStoredResult(submission) {
+  const data = window.FINAL_QUESTIONS;
+  if (!data || !submission) return;
+
+  participantName = submission.name || participantName;
+
+  if (scoreSummary) {
+    const total = Number(submission.total ?? 0);
+    const score = Number(submission.score ?? 0);
+    scoreSummary.textContent = `${total}문항 중 ${score}문항 정답`;
+  }
+  if (scorePercent) {
+    const total = Number(submission.total ?? 0);
+    const score = Number(submission.score ?? 0);
+    const percent = total > 0 ? Math.round((score / total) * 100) : 0;
+    scorePercent.textContent = `${percent}%`;
+    if (scoreNameLine) {
+      scoreNameLine.innerHTML = `<span class="name">${participantName || "참여자"}</span> 님 정답률`;
+    }
+  }
+
+  if (writeReview) {
+    writeReview.innerHTML = "";
+    const writeAnswers = Array.isArray(submission.answers?.write)
+      ? submission.answers.write
+      : [];
+    data.write.forEach((item, index) => {
+      const text = (writeAnswers[index]?.answer || "").trim();
+      const wrap = document.createElement("div");
+      wrap.className = "write-item";
+      const model = item.model || `I will ${item.target} in this situation.`;
+      const similarity = calcSimilarityPercent(text, model);
+      const writeNumber = 26 + index;
+      const labelClass = similarity >= 70 ? "label good" : "label";
+      wrap.innerHTML = `
+        <div class="${labelClass}">${writeNumber}. 유사도 ${similarity}%</div>
+        <div class="label">제출 답안</div>
+        <div class="value">${highlightUserDiff(text, model)}</div>
+        <div class="label">모범 답안</div>
+        <div class="model">${escapeHTML(model)}</div>
+      `;
+      writeReview.appendChild(wrap);
+    });
+  }
+
+  buildReviewListFromSubmission(data, submission);
+  renderFullReview(data, submission.answers);
+
+  if (resultModal) {
+    resultModal.classList.remove("hidden");
+    resultModal.style.display = "flex";
+  }
+  document.documentElement.classList.add("modal-open");
+  document.body.classList.add("modal-open");
+}
+
+function populateExamWithSubmission(submission, options = {}) {
+  const data = window.FINAL_QUESTIONS;
+  if (!data || !submission) return;
+  const shouldDisable = options.disable === true;
+
+  const answers = submission.answers || {};
+  const oxAnswers = Array.isArray(answers.ox) ? answers.ox : [];
+  const multiAnswers = Array.isArray(answers.multi) ? answers.multi : [];
+  const fillAnswers = Array.isArray(answers.fill) ? answers.fill : [];
+  const writeAnswers = Array.isArray(answers.write) ? answers.write : [];
+
+  data.ox.forEach((item, index) => {
+    const value = oxAnswers[index]?.answer || "";
+    if (!value) return;
+    const input = document.querySelector(
+      `input[name="ox-${index}"][value="${value}"]`
+    );
+    if (input) input.checked = true;
+  });
+
+  data.multi.forEach((item, index) => {
+    const value = multiAnswers[index]?.answer || "";
+    if (!value) return;
+    const input = document.querySelector(
+      `input[name="multi-${index}"][value="${value}"]`
+    );
+    if (input) input.checked = true;
+  });
+
+  data.fill.forEach((item, index) => {
+    const value = fillAnswers[index]?.answer || "";
+    const input = document.querySelector(`input[name="fill-${index}"]`);
+    if (input) input.value = value;
+  });
+
+  data.write.forEach((item, index) => {
+    const value = writeAnswers[index]?.answer || "";
+    const input = document.querySelector(`textarea[name="write-${index}"]`);
+    if (input) input.value = value;
+  });
+
+  if (examForm && shouldDisable) {
+    Array.from(examForm.elements).forEach((el) => {
+      el.disabled = true;
+    });
+  }
+}
+
+function collectAnswersSnapshot() {
+  const data = window.FINAL_QUESTIONS;
+  if (!data) return { ox: [], multi: [], fill: [], write: [] };
+  return collectAnswers();
+}
+
+function saveDraftSnapshot() {
+  if (!participantName) return;
+  const answers = collectAnswersSnapshot();
+  const payload = {
+    name: participantName,
+    score: 0,
+    total: 25,
+    submittedAt: null,
+    answers
+  };
+  saveDraftByName(participantName, payload);
+}
+
+function debounce(fn, delay = 600) {
+  let timer = null;
+  return () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => fn(), delay);
+  };
+}
+
+const debouncedDraftSave = debounce(saveDraftSnapshot, 600);
+
+function setupAutosave() {
+  if (!examForm) return;
+  examForm.addEventListener("change", debouncedDraftSave);
+  examForm.addEventListener("input", debouncedDraftSave);
 }
 
 function getReviewText() {
@@ -491,8 +846,14 @@ function addUsedName(name) {
 function isNameAllowed(name) {
   if (!name) return false;
   if (name === "유버디2") return true;
+  if (name === DEV_CODE) return true;
   if (ALLOWED_NAMES.length === 0) return true;
   return ALLOWED_NAMES.includes(name);
+}
+
+function showDevCodeError(text) {
+  if (!devCodeError) return;
+  devCodeError.textContent = text || "";
 }
 
 function showNameError(text) {
@@ -516,6 +877,7 @@ function startExam() {
   if (nameGate) nameGate.classList.add("hidden");
   if (examForm) examForm.classList.remove("hidden");
   renderExam();
+  setupAutosave();
 }
 
 function collectAnswers() {
@@ -550,12 +912,13 @@ function collectAnswers() {
 async function saveSubmission(payload) {
   if (SUBMIT_ENDPOINT) {
     try {
-      await fetch(SUBMIT_ENDPOINT, {
+      const res = await fetch(SUBMIT_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-      return;
+      if (res.ok) return;
+      throw new Error("Remote submit failed");
     } catch (e) {
       // fall through to local storage
     }
@@ -563,8 +926,9 @@ async function saveSubmission(payload) {
 
   try {
     const existing = JSON.parse(localStorage.getItem(SUBMIT_KEY) || "[]");
-    existing.push(payload);
-    localStorage.setItem(SUBMIT_KEY, JSON.stringify(existing));
+    const filtered = existing.filter((item) => item && item.name !== payload.name);
+    filtered.push(payload);
+    localStorage.setItem(SUBMIT_KEY, JSON.stringify(filtered));
   } catch (e) {}
 }
 
@@ -583,8 +947,26 @@ if (nameForm) {
       return;
     }
 
+    const latestSubmission = getLatestSubmissionByName(name);
+    if (latestSubmission) {
+      showNameError("");
+      startExam();
+      populateExamWithSubmission(latestSubmission, { disable: true });
+      showStoredResult(latestSubmission);
+      return;
+    }
+
+    const draftSubmission = getDraftByName(name);
+    if (draftSubmission) {
+      participantName = name;
+      showNameError("");
+      startExam();
+      populateExamWithSubmission(draftSubmission, { disable: false });
+      return;
+    }
+
     if (getUsedNames().includes(name)) {
-      if (name === "유버디2") {
+      if (name === "유버디2" || name === DEV_CODE) {
         showNameError("");
         startExam();
         return;
@@ -598,5 +980,20 @@ if (nameForm) {
     addUsedName(name);
     showNameError("");
     startExam();
+    saveDraftSnapshot();
+  });
+}
+
+if (devCodeForm) {
+  devCodeForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const code = (devCodeInput ? devCodeInput.value : "").trim();
+    if (code === DEV_CODE) {
+      showDevCodeError("");
+      if (devCodeInput) devCodeInput.value = "";
+      showNameGate();
+      return;
+    }
+    showDevCodeError("코드가 올바르지 않습니다.");
   });
 }
