@@ -86,7 +86,7 @@ const QUESTIONS = [
     prefix: "Progress is slow because there are",
     suffix: ".",
     meaning: "26. 이해관계자가 많다",
-    translation: "결정이 느린 이유예요.",
+    translation: "이해관계자들이 너무 많기 때문에 진행이 느립니다.",
     addedDate: "2026-01-27"
   },
   {
@@ -198,7 +198,7 @@ const QUESTIONS = [
     prefix: "This task",
     suffix: "during the handoff.",
     meaning: "22. 완전히 빠져 있다",
-    translation: "이 업무는 인계할 때 (완전히) 빠질 때가 있어요.",
+    translation: "이 일은 인계 과정에서 틈 사이로 빠집니다.",
     addedDate: "2026-01-23"
   },
   {
@@ -214,7 +214,7 @@ const QUESTIONS = [
     prefix: "That request is",
     suffix: "for this sprint.",
     meaning: "8. 범위를 벗어난",
-    translation: "그 요청은 이번 스프린트 범위를 벗어납니다.",
+    translation: "그 요청은 이번 스프린트의 범위를 벗어납니다.",
     addedDate: "2026-01-09"
   },
   {
@@ -230,7 +230,7 @@ const QUESTIONS = [
     prefix: "It felt like we were",
     suffix: "the main issue.",
     meaning: "18. 말을 에둘러 하다 / 핵심을 피하다",
-    translation: "핵심을 피해서 이야기하는 느낌이었어요.",
+    translation: "우리가 핵심 이슈 주변만 맴도는 느낌이었습니다.",
     addedDate: "2026-01-19"
   },
   {
@@ -238,7 +238,7 @@ const QUESTIONS = [
     prefix: "This is starting to feel like",
     suffix: ".",
     meaning: "24. 일의 범위를 슬금슬금 늘리다",
-    translation: "이거 요구사항이 점점 늘어나는 것 같은데요.",
+    translation: "이건 범위가 슬금슬금 커지는 것처럼 느껴지기 시작합니다.",
     addedDate: "2026-01-25"
   }
 ];
